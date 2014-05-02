@@ -1,0 +1,382 @@
+//--------------------------------------
+//--- 010 Editor v3.2 Binary Template
+//
+// File:零之轨迹 进程 战斗部分解析
+// Author:acgngca
+// Revision:2011-10-19
+// Purpose:方便测试
+// Readme:t_magic._dt文件结构改变的话就搜不到了，请注释掉或者改变搜索条件
+//        战斗部分，我方第一人没有被替换或者MS文件没有被乱改的情况下应该能搜到
+//        好多没用的东西被隐藏了; 还有好多东西意义不明，欢迎测试; 
+//--------------------------------------
+
+typedef struct
+{
+if( addr[i+1] - addr[i] >= MAGICSIZE )
+{
+    ushort	AnimationType;
+	ubyte	Target; 
+	ubyte	SpecialEffect;      // 01 强制命中 02 驱动时无法被打断
+	ubyte	Att;                // 属性 0无 1地 2水 3火 4风 5时 6空 7幻
+	ubyte	ShapeScope;         // 范围形状
+	ubyte	Effect1;
+	ubyte	Effect2;
+	ushort	RNG;
+	ushort	ScopeRadius;        // 半径
+	ushort	STCharge;
+	ushort	STCoolDown;
+    ushort	CP_EP;
+	ushort	DisplayIndex;       // 魔法列表中的显示先后，t_magic._dt中的才有效
+	short	Effect1Parameter;
+    ushort	Effect1ST;
+	short	Effect2Parameter;
+	ushort	Effect2ST;
+
+    local uint  addrTemp = FTell();
+
+    ushort  addrMagicName <hidden=true>;    // 魔法名 地址
+    ushort  addrMagicIntro <hidden=true>;   // 魔法说明 地址
+    FSeek(addrMagicName + addrT_MAGIC);     // 跳转
+    string  MagicName;
+    FSeek(addrMagicIntro + addrT_MAGIC);    // 跳转
+    string  MagicIntro;
+
+    FSeek(addrTemp);
+}
+} MAGIC <read=ReadMagicName,write=WriteMagicName>;
+
+string ReadMagicName(MAGIC &a)
+{
+    return  a.MagicName;
+}
+
+void WriteMagicName(MAGIC &a, string s)
+{
+    // 复制用
+}
+
+typedef struct
+{
+    local ushort    TOTAL = 350;
+    local ushort    MAGICSIZE = 32; // 魔法条长度 28+4 24+4
+    local int       i;
+    ushort          addr[TOTAL]  <hidden=true>; // 魔法条 地址
+
+    for( i = 0; i < TOTAL-1; i++ )
+    {
+        if( addr[i+1] - addr[i] < MAGICSIZE )
+            MAGIC   magic <hidden=true>;    // 隐藏空魔法
+        else
+        {
+            FSeek(addr[i] + addrT_MAGIC); // 跳转
+            MAGIC   magic;
+        }
+    }
+
+    // 解决最后一个
+    if( (magic[0].addrMagicName > addr[TOTAL-1]) && (magic[0].addrMagicName - addr[TOTAL-1] >= MAGICSIZE) )
+    {
+        i = 0;
+        FSeek(addr[TOTAL-1] + addrT_MAGIC);
+        MAGIC   magic;    
+    }
+} T_MAGIC;
+//-----------------------------------------------------------------------------------------------------------
+//t_magic._dt 结束
+
+typedef struct  // 抗性
+{
+	uint	CONDITION_POISON            : 1;	// 毒
+	uint	CONDITION_FREEZE            : 1;	// 冻结 FROZEN
+	uint	CONDITION_PETRIFY           : 1;	// 石化 LANDIFICATION STONE
+	uint	CONDITION_SLEEP             : 1;	// 睡眠 SLEEPING
+	uint	CONDITION_DISABLE_ARTS      : 1;	// 封魔 MUTE
+	uint	CONDITION_BLIND             : 1;	// 黑暗 DARKNESS
+	uint	CONDITION_DISABLE_CRAFT     : 1;	// 封技 SEAL
+	uint	CONDITION_CONFUSE           : 1;	// 混乱 CHAOS
+	uint	CONDITION_FAINT             : 1;	// 气绝 STUN
+	uint	CONDITION_SECOND_KILL       : 1;	// 即死
+	uint	CONDITION_BURN              : 1;	// 炎伤
+	uint	CONDITION_RAGE              : 1;	// 愤怒
+	uint	CONDITION_ARTS_GUARD        : 1;	// ArtsGuard
+	uint	CONDITION_CRAFT_GUARD       : 1;	// CraftGuard
+	uint	CONDITION_MAX_GUARD         : 1;    // 墙 虚无领域 IMMUNE
+	uint	CONDITION_VANISH            : 1;    // Vanish
+	uint	CONDITION_STR_UP_DOWN       : 1;
+	uint	CONDITION_DEF_UP_DOWN       : 1;
+	uint	CONDITION_ATS_UP_DOWN       : 1;
+	uint	CONDITION_ADF_UP_DOWN       : 1;
+	uint	CONDITION_DEX_UP_DOWN       : 1;
+	uint	CONDITION_AGL_UP_DOWN       : 1;
+	uint	CONDITION_MOV_UP_DOWN       : 1;
+	uint	CONDITION_SPD_UP_DOWN       : 1;
+	uint	CONDITION_HP_RECOVERY       : 1;    // HP 按回合回复
+	uint	CONDITION_CP_RECOVERY       : 1;    // CP 按回合回复
+	uint	CONDITION_STEALTH           : 1;    // 隐身
+	uint	CONDITION_ARTS_REFLECT      : 1;    // 魔法反射
+	uint	CONDITION_Burning_Heart     : 1;    // 罗伊德燃烧之心第四个状态:全异常状态避免，n回合后气绝。包括vanish和fat，但fat的-20CP效果避免不了。
+	uint	CONDITION_unknown1          : 1;
+	uint	CONDITION_FAT               : 1;    // 变胖/变小
+//	uint	CONDITION_CONDITION_GUARD   : 1;    // 全状态抵抗
+	uint	CONDITION_DEATH             : 1;    // 死亡 FORCE_SECOND_KILL //only valid in ASfile
+} RESISTANCE;
+
+typedef struct  // 一组 20字节
+{
+	RESISTANCE	condition;
+    ubyte       DUMMY_STRUCT_02[4] <hidden=true>;
+	ushort      Parameter;  // 0101 回合, 0201 次数, 0301 AT条动多少次, 0401 永久(石化)
+	short       Effect; // 百分比数值
+    ushort      ST;
+    ubyte       DUMMY_STRUCT_03[6h] <hidden=true>;
+} CONDITION;
+
+typedef struct
+{
+	uint				HPMax;
+	uint				HP;
+	ushort				Level;
+	ushort				EPMax;
+	ushort				EP;
+	ushort				CP;
+	uint				EXP;    
+	ushort				STR;
+	ushort				DEF;
+	ushort				ATS;
+	ushort				ADF;
+	ushort				DEX;
+	ushort				AGL;
+	ushort				MOV;
+	ushort				SPD;
+	short				DEXRate;
+	short				AGLRate;
+	uint				CPMAX;
+    uint               RNG;
+	RESISTANCE          condition;  // RESISTANCE类型，进程中有效
+} ED7_CHARACTER_STATUS;
+
+
+typedef struct  // Ai格式
+{
+    ubyte	Time <format=hex>;
+	ubyte	Probability;
+	ubyte	Target <format=hex>;
+	ubyte	DUMMY_STRUCT_01;        // 01
+    ubyte   CraftAnimation1;        // 动画代码，在AS文件中定义。蓄魔法06、放魔法07、C技10-19，S技1A-1F
+    ubyte   CraftAnimation2;
+	ushort	CraftIndex;             // 技能代码，常规查t_magic._dt，自定义技能从E8 03开始
+	uint	TimeParameter1;
+	uint	TimeParameter2;
+	uint	TargetParameter1;
+	uint	TargetParameter2;
+} ED7_AI_INFO <read=readCraftIndex>;
+
+string readCraftIndex(ED7_AI_INFO &a)
+{
+    string  temp;
+    SPrintf(temp,"%d",a.CraftIndex);
+    return  temp;
+}
+
+
+typedef struct  // 自定义技能格式
+{
+    ushort	AnimationType;      // S技07，通用C技05 可以用已存在的战技魔法代码代替
+	ubyte	Target; 
+	ubyte	SpecialEffect;      // 01 强制命中 02 驱动时无法被打断
+	ubyte	Att;                // 属性 0无 1地 2水 3火 4风 5时 6空 7幻
+	ubyte	ShapeScope;         // 范围形状
+	ubyte	Effect1;
+	ubyte	Effect2;
+	ushort	RNG;
+	ushort	ScopeRadius;        // 半径
+	ushort	STCharge;
+	ushort	STCoolDown;
+    ushort	CP_EP;
+	ushort	DisplayIndex;       // 魔法列表中的显示先后，t_magic._dt中的才有效，此处一般为1或0。
+	short	Effect1Parameter;
+    ushort	Effect1ST;
+	short	Effect2Parameter;
+	ushort	Effect2ST;
+
+	ubyte   DUMMY_STRUCT_01[4] <hidden=true>;
+    local int   addrTemp1 = FTell();
+    local int   addrCraftName = addrCraftDefinition + 512 + 288*(i-0) + 256;
+    local int   addrCraftIntro = addrCraftDefinition + 512 + 288*(i-0);
+    FSeek(addrCraftName);
+    string  CraftName;
+    FSeek(addrCraftIntro);
+    string  CraftIntro;
+    FSeek(addrTemp1);
+} ED7_CRAFT_INFO_IN_PROCESS <read=readCraftName,write=writeCraftName>;
+
+string readCraftName(ED7_CRAFT_INFO_IN_PROCESS &a)
+{
+    return  a.CraftName;
+}
+
+void writeCraftName(ED7_CRAFT_INFO_IN_PROCESS &a, string s)
+{
+    // 复制用
+}
+
+typedef struct  // 合在一块
+{
+    for( i = 0; i < 16; i++ )
+            ED7_CRAFT_INFO_IN_PROCESS   CraftDefinition;    
+} ED7_CRAFT_DEFINITION_GROUP;  
+
+
+// 最后一次(正在)使用的战技
+typedef struct
+{
+    ushort	CraftIndex; 
+    ubyte   CraftAnimation1;
+    ubyte   CraftAnimation2;
+} CraftLastUsed_INFO <read=readCraftLastUsedIndex>;
+
+string readCraftLastUsedIndex(CraftLastUsed_INFO &a)
+{
+    string  temp;
+    SPrintf(temp,"%d",a.CraftIndex);
+    return  temp;
+}
+
+// 逃跑参数
+typedef ubyte FleeParameter[4] <read=readFleeParameter>;
+
+string readFleeParameter(FleeParameter a)
+{
+    string  temp;
+    SPrintf(temp,"%02X %02X %02X %02X",a[0],a[1],a[2],a[3]);
+    return  temp;   
+}
+
+typedef struct
+{
+    local int           addrStart = FTell();
+// 0
+    ushort              SoldierNo;                  // 我方0-7，敌方8-15，支援16-19，待分身20-21
+    ubyte               unknownFlags1 <format=hex, hidden=true>;
+	ubyte				Flags <format=hex>;                      // 10 敌方 40 己方 ...
+	ubyte				DeathFlags <format=hex>;                 // 02 不参与战场胜利判定 04 死后留在战场上
+	ubyte				UnderAttackFlags <format=hex>;           // 08 Resist ATDelay 02 不被击退 01 无法移动(移动会卡死)  10 无法被攻击到  20 强制miss
+	FSkip(4);   // 复制上面四个参数？？？
+    ushort              CharacterIndex;
+    FSkip(2);   // FF 00 常量？
+    ushort              ATActTime;  // AT条动多少次，初始为0; AiTime1F
+	uint			    SYFileIndex <format=hex>;
+	uint			    MSFileIndex <format=hex>;
+	uint			    ASFileIndex <format=hex>;    
+ 
+	ubyte				DUMMY_STRUCT_00[312];
+	ubyte				DUMMY_STRUCT_001[40];
+    ubyte               dieAfterSoldierNoDie;   // 分身用，正常FF
+	ubyte				DUMMY_STRUCT_002[85];
+    ubyte               attackStatus[8];    // 最近八次的攻击与被攻击情况 队列。从AT=0开始累计，下次AT=0时结果后移，位置0清空。
+                                            // 01 受到攻击掉血大于0; 02 发动攻击命中掉血; 04 上次未使用,对应AiTime09; 
+                                            // 08 受到攻击掉血大于1/10; 10 受到物理攻击命中掉血
+	ubyte				DUMMY_STRUCT_003[51];    
+    ubyte               IsLastFightMissToSoldierNo[16];
+    ubyte               IsLastFightTargetToSoldierNo[16];
+	ubyte				DUMMY_STRUCT_01[11] <hidden=true>;    
+// 568
+    local uint          addrHP = FTell();
+    ED7_CHARACTER_STATUS    Character_Status_basic;    // normal难度基础值
+// 568 + 52
+    ED7_CHARACTER_STATUS    Character_Status_sum;      // 算上难度、装备、回路
+	ushort				MoveSPD;                // 移动速度，我方人员也从ms文件中读取
+    ushort              MoveAfterAttack;        // 从ms文件中读取
+    CONDITION           Condition[32];
+	ubyte				DUMMY_STRUCT_02[24] <hidden=true>;
+    uint               AT;
+    uint               AT2;    // AiTime08用
+// 0x544
+	ushort				AIType;
+	ushort				EXPGet;                     // 战斗胜利 结算经验前暂存
+	ushort				DropIndex1;                 // 掉落物 物品代码
+	ushort				DropIndex2 <hidden=true>;
+	ubyte				DropProbability1 <hidden=true>;           // 掉落概率
+	ubyte				DropProbability2 <hidden=true>;    
+	ubyte				Sex <hidden=true>; 
+    ubyte               DisplayHighLevelArtsAttResistance <hidden=true>;      
+                                                    // 是否开启时空幻有效率显示，0/8 不开启 1/9 开启，应该是标志位，可能含有更多信息
+	ushort				Equip[5];                   // 装备
+	ushort				Orb[7];                     // 回路   7个 
+  
+	ED7_AI_INFO	        NormalAttack;
+    ED7_AI_INFO         Art[80];
+    ED7_AI_INFO         Craft[10];
+    ED7_AI_INFO         SCraft[5];
+    ED7_AI_INFO         SupportCraft[3]; 
+    CraftLastUsed_INFO  CraftLastUsed;
+    FleeParameter       fleeParameter <hidden=true>;
+// 3768 + addrStart
+// 16条战技定义共512字节，（说明256 名字32）共288x
+    local uint          addrCraftDefinition = FTell();
+    ED7_CRAFT_DEFINITION_GROUP  CraftDefinition;    // 实际上只能放15个
+// 4280
+//	ubyte				DUMMY_STRUCT_06[32] <hidden=true>;
+	ubyte				DUMMY_STRUCT_07[288*16] <hidden=true>;    // 战技说明
+	ubyte				DUMMY_STRUCT_08[64] <hidden=true>;
+//    FSkip(288*15 + 352);
+// 8952
+	ubyte				Sepith[7] <hidden=true>;                  // 掉落耀晶片
+	ubyte				DUMMY_STRUCT_09 <hidden=true>;
+	ushort				DUMMY_STRUCT_10 <hidden=true>;
+	ushort				ArtsAttResistance[7];       // 七曜属性有效率
+	RESISTANCE			Resistance;
+	ubyte				DUMMY_STRUCT_11[132] <hidden=true>;
+// 9112
+    string              CharacterIntro;
+    FSeek(addrStart + chrBattleInfSize);
+// 9112 + 164 = 9276
+
+} ED7_CHARACTER_BATTLE_INF <read = readMSFileIndex>;
+
+string readMSFileIndex(ED7_CHARACTER_BATTLE_INF &a)
+{
+    string  temp;
+    SPrintf(temp,"ms%x",a.MSFileIndex);
+    temp = StrDel(temp,2,3);
+    return  temp;
+}
+
+/*
+    local UCHAR     searchForAddrT_MAGIC[64] = {
+0xBC,0x02,0xDC,0x02,0xFC,0x02,0x1C,0x03,0x3C,0x03,0x5C,0x03,0x7C,0x03,0x9C,0x03,
+0xBC,0x03,0xDC,0x03,0xFC,0x03,0x1C,0x04,0x3C,0x04,0x5C,0x04,0x7C,0x04,0x9C,0x04,
+0xA0,0x04,0xA4,0x04,0xA8,0x04,0xAC,0x04,0xB0,0x04,0xD0,0x04,0xF0,0x04,0x10,0x05,
+0x30,0x05,0x50,0x05,0x70,0x05,0x74,0x05,0x78,0x05,0x7C,0x05,0x80,0x05,0xA0,0x05
+};
+    local uint      addrT_MAGIC = FindFirst(searchForAddrT_MAGIC,1,0,0,0,1,3A00000h,1000000h);    // 内存编辑用
+    FSeek(addrT_MAGIC);
+
+    T_MAGIC         magicTable;
+// t_magic._dt 部分
+
+    local UCHAR         searchForAddrChr0[54] = {   
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x40,0x04,0x00
+};
+    local uint          addrChr0 = FindFirst(searchForAddrChr0,1,0,0,0,1,150B0000h,150000h) + 30h;
+// 1510F6A0h;
+//  addrChr0 = 0;
+    local int           i = 0, j;
+    local ushort        chrBattleInfSize = 9276;
+    FSeek(addrChr0);
+    for( j = 0; j < 23; j++ )
+    {
+        if( ReadUInt(addrChr0 + chrBattleInfSize*j + 16) == 0 && 
+            ReadUInt(addrChr0 + chrBattleInfSize*j + 20) == 0 &&
+            ReadUInt(addrChr0 + chrBattleInfSize*j + 24) == 0  )
+                ED7_CHARACTER_BATTLE_INF    ED7_character_battle_inf <hidden=true>;
+        else
+                ED7_CHARACTER_BATTLE_INF    ED7_character_battle_inf;
+    }
+*/
+    local int           i = 0, j;
+    local ushort        chrBattleInfSize = 9276;
+    ED7_CHARACTER_BATTLE_INF    ED7_character_battle_inf;

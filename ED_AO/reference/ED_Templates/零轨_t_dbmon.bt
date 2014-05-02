@@ -1,0 +1,45 @@
+//--------------------------------------
+//--- 010 Editor v3.2 Binary Template
+//
+// File:DT30Template.bt
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+
+typedef struct  
+{
+    uint	Unknown1;
+    uint	Unknown2  <fgcolor=cBlue>;
+    uint	Unknown3;
+	uint   ASFileIndex <format=hex>;
+    uint	Unknown5;
+//	ubyte	DUMMY_STRUCT_10[2] <hidden=true>;	//0x14
+} MONSTER_INDEX;
+
+typedef struct
+{
+    string              monster_name;
+} MONSTER;
+
+
+//  ubyte	            DUMMY_STRUCT_01[5884];
+//  ubyte	            DUMMY_STRUCT_00[3960];
+/*     MAGIC_INFO          Magic_Info_01[15];
+    ubyte	            DUMMY_STRUCT_01[20];
+    MAGIC_INFO          Magic_Info_02[6];
+    ubyte	            DUMMY_STRUCT_02[16];   
+    MAGIC_INFO          Magic_Info_03[5];
+    ubyte	            DUMMY_STRUCT_03[20];
+    MAGIC_INFO          Magic_Info_04[5];
+    ubyte	            DUMMY_STRUCT_04[20];
+    MAGIC_INFO          Magic_Info_05[3];
+    ubyte	            DUMMY_STRUCT_05[28];
+    MAGIC_INFO          Magic_Info_06[10];
+    ubyte	            DUMMY_STRUCT_06[28];
+
+    MAGIC_INFO          Magic_Info[153];
+    MAGIC_TEXT          Magic_Text[153] <optimize=false,open=true>;
+*/
+    MONSTER_INDEX       monster_index[198];
+    MONSTER             monster_name[197] <optimize=false,open=true>;

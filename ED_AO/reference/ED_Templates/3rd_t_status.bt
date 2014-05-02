@@ -1,0 +1,15 @@
+//--------------------------------------
+//--- 010 Editor v3.2 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+
+#include "3rd_t_status.bt.h"
+
+local uint addrT_status = 0;
+
+FSeek(addrT_status);
+T_status  statusTable;

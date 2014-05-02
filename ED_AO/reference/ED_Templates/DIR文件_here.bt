@@ -1,0 +1,97 @@
+//--------------------------------------
+//--- 010 Editor v3.2 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+
+// 一些结构
+//-----------------------------------------------------------------------------------------------------------
+typedef struct  //DAT DIR文件索引
+{
+    ushort  Index;
+    ushort  DatNo <format=hex>;
+	local string	display;
+	SPrintf(display,"DT%02X  %04d", DatNo, Index);
+} FileIndex <read=readFileIndex,write=writeFileIndex>;
+
+string readFileIndex(FileIndex &a)
+{
+	return	a.display;
+}
+
+void writeFileIndex(FileIndex &a, string s)
+{
+	// 复制用
+}
+
+
+typedef struct(int parArrayBytes)	// 字节数组，顺序显示用
+{
+	byte			arrayBytes[parArrayBytes];
+	local int		i, arrayBytesSize;
+	local string	stringTemp, stringSum = "";
+	for (i = 0; i < parArrayBytes - 1; i++)
+	{
+		SPrintf(stringTemp, "%02X", arrayBytes[i]);
+		stringSum = stringSum + stringTemp + " ";
+	}
+	SPrintf(stringTemp, "%02X", arrayBytes[i]);
+	stringSum = stringSum + stringTemp;
+	arrayBytesSize = parArrayBytes;
+} ArrayBytes <read=readArrayBytes, write=writeArrayBytes, optimize=false>;
+
+string readArrayBytes(ArrayBytes &a)
+{
+	return  a.stringSum;
+}
+
+void writeArrayBytes(ArrayBytes &a, string s)
+{
+	// 复制用
+}
+
+
+//------------------------------------------------------
+typedef struct  //每组12+24字节
+{
+    string  fileName;
+	FSkip(3);
+	uint	fileSize;
+    ubyte	DUMMY_STRUCT_01[16] <hidden=true>;
+} FILE <read=readFileName,write=writeFileName>;
+
+string readFileName(FILE &a)
+{
+	return	a.fileName;
+}
+
+void writeFileName(FILE &a, string s)
+{
+	// 复制用
+}
+
+typedef struct  //每组12+24字节
+{
+	local int	Index = 0;
+	while (ReadByte(FTell()) != 0 && Strlen(ReadString(FTell())) == 12)
+	{
+		if (ReadString(FTell()) != "/_______.___")
+		{
+			FILE	file;
+		}
+		else
+		{
+			FILE	file;// <hidden=true>;
+		}
+		Index++;
+		if (FTell() + 24h > FileSize())
+			break;
+	}
+} DIR;
+
+
+FSeek(GetCursorPos());
+DIR	dir;

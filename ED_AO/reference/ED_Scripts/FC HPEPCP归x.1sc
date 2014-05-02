@@ -1,0 +1,19 @@
+//--------------------------------------
+//--- 010 Editor v4.0.1 Script File
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+int	i, x = 1;
+//for (i = 0; i < 4; i++)
+for (i = 0; i < 4; i++)
+{
+	ED6_character_battle_inf[i].StatusSum.HP = x;
+	//ED7_character_battle_inf[i].Character_Status_sum.HP = x;
+	//menu.Status[i].EP = x;
+	//menu.Status[i].CP = x;
+	//menu.Status[i].condition.CONDITION_DEATH = 1;
+	//if (i < 7) Team[i] = i;
+}

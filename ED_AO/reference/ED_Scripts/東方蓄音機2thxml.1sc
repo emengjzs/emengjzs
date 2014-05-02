@@ -1,0 +1,48 @@
+//--------------------------------------
+//--- 010 Editor v4.0 Script File
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+int	lineTotalNum = TextGetNumLines();
+int i, addrLineStart, indexLinePart2, indexLinePart3, indexLineEnd;
+uint	numStart, numSkipLen, numLoopLen;
+string	strLine, strLinePart1, strLinePart2, strLinePart3;
+string	strTitle;
+int		sampleRate;
+for (i = 0; i < lineTotalNum; i++)
+//for (i = 2; i < 3; i++)
+{
+	addrLineStart = TextLineToAddress(i);
+	if(i == 0 && ReadByte(0) == '\xEF' && ReadByte(1) == '\xBB' && ReadByte(2) == '\xBF')
+	{
+		addrLineStart +=3;
+	}
+	strLine = ReadLine(addrLineStart);
+
+if (SubStr(strLine, 0, 14) == "#=SamplingRate")
+{
+	SScanf(strLine, "#=SamplingRate,%d,%LX,%LX,%LX,%[^\n\r]", sampleRate, numStart, numSkipLen, numLoopLen, strTitle); 
+	numStart = 0;
+	numSkipLen = numSkipLen / 4;
+	numLoopLen = numLoopLen / 4;
+	//SPrintf(strLine, "%Lu,%Lu,%Lu,%s\r\n", numStart, numSkipLen, numLoopLen, strTitle);
+	SPrintf(strLine, "\t\t<bgm file=\"th08_%02d.flac\" pos=\"%Lu,%Lu,%Lu\" samplerate=\"%d\">%s</bgm>\r\n", 
+					i+1, numStart, numSkipLen, numLoopLen, sampleRate, strTitle);
+	TextWriteLine(strLine, i);
+	continue;
+}
+	//indexLineEnd = Strlen(strLine);
+	//strTitle = SubStr(strLine, 27, -1);
+	// %sÓö¿Õ¸ñÍ£Ö¹£¬ÓÃ%[^\n\r]´úÌæ
+	SScanf(strLine, "%LX,%LX,%LX,%[^\n\r]", numStart, numSkipLen, numLoopLen, strTitle); 
+	numStart = 0;
+	numSkipLen = numSkipLen / 4;
+	numLoopLen = numLoopLen / 4;
+	//SPrintf(strLine, "%Lu,%Lu,%Lu,%s\r\n", numStart, numSkipLen, numLoopLen, strTitle);
+	SPrintf(strLine, "\t\t<bgm file=\"th08_%02d.flac\" pos=\"%Lu,%Lu,%Lu\">%s</bgm>\r\n", 
+					i+1, numStart, numSkipLen, numLoopLen, strTitle);
+	TextWriteLine(strLine, i);
+}

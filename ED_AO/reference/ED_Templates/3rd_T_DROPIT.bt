@@ -1,0 +1,71 @@
+//--------------------------------------
+//--- 010 Editor v4.0 Binary Template
+//
+// File:T_DROPIT._DT
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+typedef struct
+{
+    ushort  index;
+    ushort  unknown <hidden=true>;
+    if (unknown != 0)
+    	Printf("%d\r\n", FTell());
+	ushort	item[8];
+	byte	probability[8];	
+/*
+	ushort	item1;
+	ushort	item2;
+	ushort	item3;
+	ushort	item4;
+	ushort	item5;
+	ushort	item6;
+	ushort	item7;
+	ushort	item8;
+	byte	probability1;
+	byte	probability2;
+	byte	probability3;
+	byte	probability4;
+	byte	probability5;
+	byte	probability6;
+	byte	probability7;
+	byte	probability8;
+*/
+} DropItem <read=readDropItem,write=writeDropItem>;
+
+string readDropItem(DropItem &a)
+{
+	string	s;
+	SPrintf(s, "%d", a.index);
+	return  s;
+}
+
+void writeDropItem(DropItem &a, string s)
+{
+	// 复制用
+}
+
+typedef struct
+{
+	local int	total = 0;
+	while (FTell() <= FileSize() - 28 && ReadUShort(FTell()) < 9999)
+	{
+		DropItem	dropItem;
+		total++;
+	}
+} T_DROPIT <read=readT_DROPIT>;
+
+string readT_DROPIT(T_DROPIT &a)
+{
+	return  "掉落物分组";
+}
+
+local int64	addrT_DROPIT = 0;
+if (IsProcess())
+{
+	addrT_DROPIT = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(0x2DED870)));
+}
+
+FSeek(addrT_DROPIT);
+T_DROPIT	dropItemTable;

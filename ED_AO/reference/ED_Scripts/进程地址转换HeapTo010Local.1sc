@@ -1,0 +1,23 @@
+//--------------------------------------
+//--- 010 Editor v3.2 Script File
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+UINT pos1 = InputNumber("title", "caption", "0x");
+UINT pos2 = ProcessHeapToLocalAddress(pos1);
+Printf("%Xh",pos2);
+
+if (pos2 != 0xFFFFFFFF)
+{
+	SetCursorPos(pos2);
+
+
+	
+	string temp;
+	SPrintf(temp, "%Xh", pos2);
+	//CopyStringToClipboard(temp);
+}
+

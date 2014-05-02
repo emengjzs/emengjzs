@@ -1,0 +1,44 @@
+//--------------------------------------
+//--- 010 Editor v3.2 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+typedef struct
+{
+	local uint	addrPlaceNameReal = FTell();
+	string	PlaceName;
+} PLACE <read=readPlaceName,write=writePlaceName>;
+
+string readPlaceName(PLACE &a)
+{
+	return	a.PlaceName;
+}
+
+void writePlaceName(PLACE &a, string s)
+{
+	// 复制用
+};
+
+typedef struct
+{
+	local int		PlaceIndex = 0;
+	ushort			TOTAL <hidden=true>;
+	ushort			addr[TOTAL] <hidden=true>;
+	for (PlaceIndex = 0; PlaceIndex < TOTAL; PlaceIndex++)
+	{
+		FSeek(addr[PlaceIndex] + addrT_town);
+		PLACE	place;
+	}
+} T_town <read=readT_town>;
+
+string readT_town(T_town &a)
+{
+	return  "地点列表";
+}
+	// 地点列表
+	local uint		addrT_town = 0;	// 内存编辑用
+	FSeek(addrT_town);
+	T_town			placeTable;

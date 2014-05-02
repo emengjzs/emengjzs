@@ -1,0 +1,327 @@
+//--------------------------------------
+//--- 010 Editor v3.2 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+//#include "ED6_common_define.bt.h"
+//#define ED6_FC		0x01
+//#define ED6_SC		0x02
+#define ED6_3RD		0x04
+//#define ED_ZERO		0x08
+//#define ED_AO		0x10
+//local int ED6_NO = ED6_SC;
+#include "ED6_common.bt.h"
+
+typedef struct
+{
+	ushort       		character1;
+    ushort              character2;
+    ushort              character3;
+    ushort              character4;		
+} TEAM_GROUP;
+
+//------------------------------------------------------
+typedef struct  //每组12+24字节
+{
+    string  fileName;
+	FSkip(3);
+	uint	fileSize;
+    ubyte	DUMMY_STRUCT_01[16] <hidden=true>;
+} FILE <read=readFileName,write=writeFileName>;
+
+string readFileName(FILE &a)
+{
+	return	a.fileName;
+}
+
+void writeFileName(FILE &a, string s)
+{
+	// 复制用
+}
+
+typedef struct  //每组12+24字节
+{
+	local int	Index = 0;
+	while (ReadByte(FTell()) != 0)
+	{
+		if (ReadString(FTell()) != "/_______.___")
+		{
+			FILE	file;
+		}
+		else
+		{
+			FILE	file <hidden=true>;
+		}
+		Index++;
+	}
+} DIR;
+
+// 角色列表
+//-----------------------------------------------------------------------------------------------------------
+
+typedef struct(int parCHARACTER)	// 0x22 bytes
+{
+	if (parCHARACTER == 1)
+	{
+		ushort      CharacterIndex <fgcolor=cBlue>;
+		FSkip(2);
+		FileIndex	CHFileIndex[4] <optimize=false>;
+		FileIndex	MSFileIndex;
+		FileIndex	unknown;
+		FileIndex	CHFileIndexST;	// STATUS里显示的头像
+
+		ushort      addrCharacterName <hidden=true>;
+		local uint  addrTemp = FTell();
+		local uint	addrCharacterNameReal = addrCharacterName + addrT_name;
+		FSeek(addrCharacterNameReal);
+		string  CharacterName;
+		FSeek(addrTemp);
+	}
+	else if (parCHARACTER == 0)
+	{
+		ubyte			MSFileIndex;	// 去掉 WARNING Line xx: Empty structure.
+		local string	CharacterName = "nul \t";
+	}
+} CHARACTER <read=readCharacterName,write=writeCharacterName>;
+
+string readCharacterName(CHARACTER &a)
+{
+	return	a.CharacterName;
+}
+
+void writeCharacterName(CHARACTER &a, string s)
+{
+	// 复制用
+}
+
+typedef struct
+{
+	local int	i = 0, j=0, k=0;
+	local int	characterIndexMax = 2999;
+	local uint	addrTemp, addrK;
+	ushort		addr2000 <hidden=true>;
+
+	while(1) 
+	{
+		addrTemp = FTell();
+		addrK = ReadUShort(FTell()) + addrT_name;
+		k = ReadUShort(addrK);
+		if (k == i)
+		{
+			FSeek(addrK);
+			CHARACTER	character(1);
+			i++;
+			FSeek(addrTemp);
+			FSkip(0x2);
+		}
+		else if (k < i)
+		{
+			Warning("Warning: Reverse index met at pos 0x%X.",addrK);
+			Printf("Warning: Reverse index met at pos 0x%X.\n",addrK);
+			FSkip(0x2);
+		}
+		else
+		{
+			for (j = i; j < k; j++)
+			{
+				FSeek(addrT_name);
+				CHARACTER	character(0) <hidden=true>;
+				i++;
+			}
+			FSeek(addrTemp);
+		}
+
+		if(k == characterIndexMax || i == characterIndexMax)
+		{
+			break;
+		}
+	}
+} T_name <read=readT_name>;
+
+string readT_name(T_name &a)
+{
+	return  "角色列表";
+}
+
+typedef struct
+{
+    local int           addrStart = FTell();
+// 0
+    ushort              SoldierNo;                  // 我方0-7，敌方8-15，支援16-19，待分身20-21
+    ubyte               unknownFlags1 <format=hex, hidden=true>;
+	ubyte				Flags <format=hex>;                      // 10 敌方 40 己方 ...
+	ubyte				DeathFlags <format=hex>;                 // 02 不参与战场胜利判定 04 死后留在战场上
+	ubyte				UnderAttackFlags <format=hex>;           // 08 Resist ATDelay 02 不被击退 01 被攻击不转身(3D)  10 无法被攻击到  20 强制miss
+	FSkip(4);
+    ushort              CharacterIndex;
+    FSkip(2);
+    ushort              ATActTime;  // AT条动多少次，初始为0
+	FileIndex			SYFileIndex;
+	FileIndex			MSFileIndex;
+	FileIndex			ASFileIndex;    
+/* 
+	ubyte				DUMMY_STRUCT_00[438];
+    ubyte               attackStatus[8];    // 最近八次的攻击与被攻击情况 队列。从AT=0开始累计，下次AT=0时结果后移，位置0清空。
+                                            // 01 掉血大于0; 02 发动攻击命中掉血; 08 掉血大于2000; 10 受到物理攻击命中掉血
+	ubyte				DUMMY_STRUCT_001[51];    
+    ubyte               IsLastFightMissToSoldierNo[16];
+    ubyte               IsLastFightTargetToSoldierNo[16];
+	ubyte				DUMMY_STRUCT_01[11] <hidden=true>;   
+*/ 
+	ubyte				DUMMY_STRUCT_01[528] <hidden=true>; 
+
+	FSeek(addrStart + 0x17E);
+	ushort				attackTyte;	//0 攻击；1 移动；2 魔法；3战技；4 S技；5 道具；9 待选择
+	FSeek(addrStart + 0x18A);
+	ushort				attackCraft;
+
+// 568
+	FSeek(addrStart + 0x22C);
+    local int           addrHP = FTell();
+    ED6_CHARACTER_STATUS    Character_Status_basic;    // normal难度基础值
+
+// 568 + 52
+    ED6_CHARACTER_STATUS    Character_Status_sum;      // 算上难度、装备、回路
+	ushort				MoveSPD;                // 移动速度，我方人员也从ms文件中读取
+    ushort              MoveAfterAttack;        // 从ms文件中读取
+    CONDITION           Condition[32];
+	FSkip(24);
+    int					AT;
+    int					AT2;
+	FSkip(4);
+	ushort				AIType;
+
+//	uint				EXPGet;                     // 战斗胜利 结算经验前暂存
+	ushort				DropIndex1;                 // 掉落物 物品代码
+	ushort				DropIndex2;
+	ubyte				DropProbability1;           // 掉落概率
+	ubyte				DropProbability2;    
+	ubyte				Sex; 
+    ubyte               DisplayHighLevelArtsAttResistance <hidden=true>;      
+                                                    // 是否开启时空幻有效率显示，0/8 不开启 1/9 开启，应该是标志位，可能含有更多信息
+
+//	ubyte				DUMMY_STRUCT_021[10] <hidden=true>;
+	ushort				Equip[5];                   // 装备
+	ushort				Orb[7];                     // 回路   7个 
+    ubyte				DUMMY_STRUCT_021[2] <hidden=true>;  
+	ED6_AI_INFO	        NormalAttack;
+    ED6_AI_INFO         Art[80];
+    ED6_AI_INFO         Craft[10];
+    ED6_AI_INFO         SCraft[5];
+//    ED6_AI_INFO         SupportCraft[3]; 
+	CraftLastUsed_INFO	CraftLastUsed;
+	ArrayBytes			fleeParameter(4);
+// 3768 + addrStart
+// 15条战技定义共512字节，（说明256 名字32）共288x
+    local uint          addrCraftDefinition = FTell();
+    ED6_CRAFT_DEFINITION_GROUP  CraftDefinition;
+//	ubyte				DUMMY_STRUCT_07[288*15];    // 战技说明
+//	ubyte				DUMMY_STRUCT_08[363];
+
+	FSeek(addrStart + 0x22C3);
+	ubyte				Sepith[7];                  // 掉落耀晶片
+	FSkip(2);
+	ushort				EXPGet;                     // 战斗胜利 结算经验前暂存
+    FSkip(2);
+	ushort				ArtsAttResistance[7];       // 七曜属性有效率
+    FSkip(2);
+	RESISTANCE			Resistance;
+	FSeek(addrStart + 0x2370);
+    string              CharacterIntro;
+
+	//FSeek(ProcessHeapToLocalAddress(0x2D8*SoldierNo + 0x69E638));
+	FSeek(ProcessHeapToLocalAddress(ReadUInt(addrHP-8)));
+	string				CharacterName;
+
+    FSeek(addrStart + chrBattleInfSize);
+} ED6_CHARACTER_BATTLE_INF <read = ReadMSFileIndex>;
+
+string ReadMSFileIndex(ED6_CHARACTER_BATTLE_INF &a)
+{
+	return	a.MSFileIndex.display + " " + a.CharacterName;
+}
+
+
+	//local uint addrT_name = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(0x2DE9324)));
+	//local uint addrT_item = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(0x02DE9328)));
+	//local uint addrT_magic = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(0x2DE9338)));
+
+local uint addrEXE = 0x400000;
+local uint addrT_name = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x29ED800)));
+local uint addrT_item = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x29ED804)));
+local uint addrT_magic = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x29ED814)));
+local uint addrT_btset1 = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x29ED818)));
+local uint addrT_btset2 = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x29ED81C)));
+local uint addrT_status = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(0x2DED830)));
+local uint addrT_orb = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(0x2DED834)));
+local uint addrT_sltget = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(0x2DED838)));
+
+local uint addrDIR21 = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(0x21*4 + 0x2CAD950)));
+/*
+FSeek(ProcessHeapToLocalAddress(0x2DA4DD8));
+int	IsDisplayAT;
+int	IsDisplayConditionAT;
+
+	// 角色列表
+	FSeek(addrT_name);
+	T_name			characterTable;
+
+// 魔法战技定义
+#include "t_magic.bt.h"
+FSeek(addrT_magic);
+T_magic         magicTable;
+
+#include "3rd_T_BTSET.bt.h"
+
+FSeek(addrT_btset1);
+T_btset         btSetTable1;
+FSeek(addrT_btset2);
+T_btset         btSetTable2;
+
+#include "3rd_t_status.bt.h"
+
+FSeek(addrT_status);
+T_status  statusTable;
+
+#include "3rd_T_DROPIT.bt"
+
+#include "3rd_t_orb.bt.h"
+FSeek(addrT_orb);
+T_orb  orbTable;
+
+FSeek(addrDIR21);
+DIR	dir32;
+*/
+	local uint			addrChr0 = ProcessHeapToLocalAddress(0x66E640);
+    local int           i = 0, j;
+    local ushort        chrBattleInfSize = 9360;
+    FSeek(addrChr0);
+    for( j = 0; j < 21; j++ )
+    {
+        if( ReadUInt(addrChr0 + chrBattleInfSize*j + 16) == 0 && 
+            ReadUInt(addrChr0 + chrBattleInfSize*j + 20) == 0 &&
+            ReadUInt(addrChr0 + chrBattleInfSize*j + 24) == 0  )
+                ED6_CHARACTER_BATTLE_INF    ED6_character_battle_inf <hidden=true>;
+        else
+                ED6_CHARACTER_BATTLE_INF    ED6_character_battle_inf;
+    }
+
+FSeek(ProcessHeapToLocalAddress(0x721A38));
+int		battleNowIndex <format=hex>;
+FSeek(ProcessHeapToLocalAddress(0x672700));
+int		battleLastIndex <format=hex>;
+
+FSeek(ProcessHeapToLocalAddress(0x2D70C2C));
+int				Team[16];
+TEAM_GROUP		TeamFinal[4];
+//FSeek(ProcessHeapToLocalAddress(0x02D70C8C));
+STATUS			Status[32];
+FSeek(ProcessHeapToLocalAddress(0x02D7974A));
+POSITION		position[32];
+FSeek(ProcessHeapToLocalAddress(0x2D798AC));
+ushort	SBreak[32];
+FSeek(ProcessHeapToLocalAddress(0x2D7990E));
+ushort	Replace[32];

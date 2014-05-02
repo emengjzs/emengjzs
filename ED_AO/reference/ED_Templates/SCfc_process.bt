@@ -1,0 +1,44 @@
+//--------------------------------------
+//--- 010 Editor v4.0.1 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+typedef struct  //DAT DIR文件索引
+{
+    ushort  Index;
+    ushort  DatNo <format=hex>;
+	local string	display;
+	SPrintf(display,"DT%02X  %04d", DatNo, Index);
+} FileIndex <read=readFileIndex,write=writeFileIndex>;
+
+string readFileIndex(FileIndex &a)
+{
+	return	a.display;
+}
+
+void writeFileIndex(FileIndex &a, string s)
+{
+	// 复制用
+}
+
+local uint addrEXE = 0x400000;
+//local uint addrT_name = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x29ED800)));
+//local uint addrT_item = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x29ED804)));
+//local uint addrT_magic = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x29ED814)));
+local uint addrT_btset1 = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x2B29D6C)));
+local uint addrT_btset2 = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(addrEXE + 0x2B2A11C)));
+//local uint addrDIR21 = ProcessHeapToLocalAddress(ReadUInt(ProcessHeapToLocalAddress(0x21*4 + 0x2CAD950)));
+
+FSeek(ProcessHeapToLocalAddress(0x60DBCC));
+int				lastBattleIndex <format=hex>;
+
+
+#include "3rd_T_BTSET.bt.h"
+
+FSeek(addrT_btset1);
+T_btset         btSetTable1;
+FSeek(addrT_btset2);
+T_btset         btSetTable2;

@@ -1,0 +1,39 @@
+//--------------------------------------
+//--- 010 Editor v3.2 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+typedef struct(int parArrayBytes)	// 字节数组，顺序显示用
+{
+	ubyte			arrayBytes[parArrayBytes];
+	local int		i, arrayBytesSize;
+	local string	stringTemp, stringSum = "";
+	for (i = 0; i < parArrayBytes - 1; i++)
+	{
+		SPrintf(stringTemp, "%02X", arrayBytes[i]);
+		stringSum = stringSum + stringTemp + " ";
+	}
+	SPrintf(stringTemp, "%02X", arrayBytes[i]);
+	stringSum = stringSum + stringTemp;
+	arrayBytesSize = parArrayBytes;
+} ArrayBytes <read=readArrayBytes, write=writeArrayBytes, optimize=false>;
+
+string readArrayBytes(ArrayBytes &a)
+{
+	return  a.stringSum;
+}
+
+void writeArrayBytes(ArrayBytes &a, string s)
+{
+	// 复制用
+}
+
+#include "zero_t_world.bt.h"
+
+local uint addrT_world = 0;
+
+FSeek(addrT_world);
+T_world  worldTable;

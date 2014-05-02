@@ -1,0 +1,78 @@
+//--------------------------------------
+//--- 010 Editor v3.1.2 二进制模板
+//
+// File:
+// Author: sinsyy
+// Revision:
+// Purpose:
+//--------------------------------------
+
+
+typedef struct
+{
+    //注除HP,SPD外,其它*10
+	ushort	HP_up;
+	ubyte	EP_up;	
+    ubyte	STR_up;
+    ubyte	DEF_up;
+    ubyte	ATS_up;
+    ubyte	ADF_up;
+    ubyte	SPD_up;
+    ubyte	skill_1_time;//回合数
+    ubyte   skill_1_uprate;//增加比率
+    ubyte	skill_2_time;//回合数
+    ubyte   skill_2_uprate;//增加比率
+    ushort	skill_3;//对应魔法技能表，16进制
+    ubyte	skillDisindex[6];//6行文字显示索引,与下面MMintro数组索引对应
+ 
+	
+}LVvalue;
+
+typedef struct
+{
+    LVvalue mquartzLV1;
+    LVvalue mquartzLV2;
+    LVvalue mquartzLV3;
+    LVvalue mquartzLV4;
+    LVvalue mquartzLV5;
+}MasterQUARTZview;
+
+typedef struct
+{
+    string  MMintro;
+}Masterintro;
+
+local int i = 0;
+local int j = 0;
+//local ulong adr=22*sizeof(MasterQUARTZview); //22为回路数量
+
+
+for(i = 0; i <22; i++)
+{
+    MasterQUARTZview MasterQUARTZ;
+}
+
+
+
+   // FSeek(0x0898 + skillDisindex[0]*2);	// 跳转
+	//string  ItemIntro;
+ushort MMIntroAdrEND;
+local ushort MMIntroindex=FTell();
+local int introsize=(MMIntroAdrEND-FTell())/2;
+local ushort	addr[introsize];
+local string  MagicName;
+for(i = 0; i <introsize; i++)
+{
+    addr[i]=ReadUShort(FTell());
+
+}
+for(i = 0; i <introsize; i++)
+{
+ 
+			FSeek(ReadUShort(MMIntroindex+2*i));		// 跳转
+			Masterintro MMintro;
+}
+
+
+
+

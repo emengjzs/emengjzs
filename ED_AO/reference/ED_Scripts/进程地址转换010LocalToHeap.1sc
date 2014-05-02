@@ -1,0 +1,29 @@
+//--------------------------------------
+//--- 010 Editor v3.2 Script File
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+UINT pos1 = GetCursorPos();
+UINT pos2;
+if (IsProcess())
+{
+	pos2 = ProcessLocalToHeapAddress(pos1);
+	Printf("%X",pos2);
+	
+	string temp;
+	SPrintf(temp, "%X", pos2);
+	CopyStringToClipboard(temp);
+}
+else
+{
+	pos2 = pos1;
+
+Printf("%d",pos2);
+
+string temp;
+SPrintf(temp, "%d", pos2);
+CopyStringToClipboard(temp);
+}
