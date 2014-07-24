@@ -2,13 +2,18 @@
 =============================================
 
 Author: JZS
+
 Email : jzs12@software.nju.edu.cn
+
 Date  : 14/05/22
 
+
 仅用于学习交流，请勿作商业用途。
+
 Do Not Used This Program For Further Commercial Purpose.
 
 基于软工三游戏规则要求的三消逻辑层实现，带自动运行脚本供测试。
+
 
 >已实现的功能：
 >+ 9*9的游戏格子；
