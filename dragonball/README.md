@@ -14,4 +14,4 @@ Date  : 14/06/30
 
 仅用于学习交流，请勿作商业用途。
 
-Do Not Used This Program For Further Commercial Purpose.
+Do Not Use This Program For Further Commercial Purpose.
