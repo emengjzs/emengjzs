@@ -1,0 +1,135 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="page-header" style="margin-top: 20px;">
+                <h2>New Task</h2>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="well">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>1 Basic Info</legend>
+
+                        <div class="form-group">
+                            <label for="inputName" class="col-lg-2 control-label">名称</label>
+                            <div class="col-lg-10">
+                                <input ng-model="$ctrl.job.name" class="form-control" id="inputName" placeholder="任务名称"
+                                       type="text"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="descriptionName" class="col-lg-2 control-label">描述</label>
+                            <div class="col-lg-10">
+                                <textarea ng-model="$ctrl.job.description" class="form-control" rows="3"
+                                          id="descriptionName"></textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="well">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>2 Project Info</legend>
+
+
+                        <div class="form-group">
+
+                            <label for="inputSvnAdr" class="col-lg-2 control-label">项目工程SVN地址</label>
+                            <div class="col-lg-10">
+                                <div class="input-group">
+                            <span class="input-group-btn" style="width:20%;">
+                                <select ng-model="$ctrl.job.svnType" class="form-control" id="SvnType"
+                                        style="font-size: 14px;">
+                                    <option ng-repeat="svnType in $ctrl.svnTypes">{{svnType}}</option>
+                                </select>
+                            </span>
+                                    <input ng-model="$ctrl.job.svnAdr" class="form-control" id="inputSvnAdr"
+                                           placeholder="项目的SVN签出地址" type="text"/>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="inputAutoSvnAdr" class="col-lg-2 control-label">测试工程SVN地址</label>
+                            <div class="col-lg-10">
+
+
+                                <input class="form-control disabled" disabled="disabled" id="inputAutoSvnAdr"
+                                       placeholder="自动化测试项目的SVN签出地址" type="text"
+                                       value="{{$ctrl.job.svnType}}{{$ctrl.job.svnAdr}}-automation"/></div>
+
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+            <div class="well">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>3 Deploy Info</legend>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">选项</label>
+                            <div class="col-lg-10">
+                                <div class="radio">
+                                    <label>
+                                        <input ng-model="$ctrl.job.automation" name="optionsRadios" id="optionsRadios1"
+                                               value="false" checked=""
+                                               type="radio">
+                                        仅进行构建
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input ng-model="$ctrl.job.automation" name="optionsRadios" id="optionsRadios2"
+                                               value="false" checked=""
+                                               type="radio">
+                                        仅进行构建和部署
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input ng-model="$ctrl.job.automation" name="optionsRadios" id="optionsRadios3"
+                                               value="true" checked=""
+                                               type="radio">
+                                        进行构建、部署和测试
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">定时设置</label>
+                            <div class="col-lg-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input ng-model="$ctrl.job.needSchedule" type="checkbox">
+                                        自动执行
+                                    </label>
+                                </div>
+                                <input ng-model="$ctrl.job.cronExp" ng-disabled="!$ctrl.job.needSchedule" class="form-control" id="inputCronExp" placeholder="CRON表达式" type="text"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5">
+            <button ng-click="$ctrl.submit()" type="button" class="btn btn-primary btn-lg">完成</button>
+            <button type="button" class="btn btn-default btn-lg">取消</button>
+        </div>
+    </div>
+    <div class="row">
+        <br/>
+    </div>
+
+</div>

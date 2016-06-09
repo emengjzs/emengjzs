@@ -1,0 +1,166 @@
+0 		id 	移入: id	
+0 4 	id 	= 	移入: =	
+0 4 10 	id = 	( 	移入: (	
+0 4 10 23 	id = ( 	integer 	移入: integer	
+0 4 10 23 36 	id = ( integer 	* 	归约16: val->integer	
+0 4 10 23 38 	id = ( val 	* 	归约14: factor->val	
+0 4 10 23 33 	id = ( factor 	* 	归约12: term->factor	
+0 4 10 23 37 	id = ( term 	* 	移入: *	
+0 4 10 23 37 50 	id = ( term * 	integer 	移入: integer	
+0 4 10 23 37 50 36 	id = ( term * integer 	+ 	归约16: val->integer	
+0 4 10 23 37 50 38 	id = ( term * val 	+ 	归约14: factor->val	
+0 4 10 23 37 50 61 	id = ( term * factor 	+ 	归约11: term->term * factor	
+0 4 10 23 37 	id = ( term 	+ 	归约10: expr->term	
+0 4 10 23 44 	id = ( expr 	+ 	移入: +	
+0 4 10 23 44 48 	id = ( expr + 	integer 	移入: integer	
+0 4 10 23 44 48 36 	id = ( expr + integer 	) 	归约16: val->integer	
+0 4 10 23 44 48 38 	id = ( expr + val 	) 	归约14: factor->val	
+0 4 10 23 44 48 33 	id = ( expr + factor 	) 	归约12: term->factor	
+0 4 10 23 44 48 59 	id = ( expr + term 	) 	归约9: expr->expr + term	
+0 4 10 23 44 	id = ( expr 	) 	移入: )	
+0 4 10 23 44 56 	id = ( expr ) 	+ 	归约13: factor->( expr )	
+0 4 10 25 	id = factor 	+ 	归约12: term->factor	
+0 4 10 29 	id = term 	+ 	归约10: expr->term	
+0 4 10 24 	id = expr 	+ 	移入: +	
+0 4 10 24 45 	id = expr + 	float 	移入: float	
+0 4 10 24 45 26 	id = expr + float 	semi 	归约17: val->float	
+0 4 10 24 45 30 	id = expr + val 	semi 	归约14: factor->val	
+0 4 10 24 45 25 	id = expr + factor 	semi 	归约12: term->factor	
+0 4 10 24 45 57 	id = expr + term 	semi 	归约9: expr->expr + term	
+0 4 10 24 	id = expr 	semi 	归约8: statement->id = expr	
+0 6 	statement 	semi 	归约3: S->statement	
+0 2 	S 	semi 	移入: semi	
+0 2 8 	S semi 	id 	移入: id	
+0 2 8 4 	S semi id 	= 	移入: =	
+0 2 8 4 10 	S semi id = 	integer 	移入: integer	
+0 2 8 4 10 28 	S semi id = integer 	semi 	归约16: val->integer	
+0 2 8 4 10 30 	S semi id = val 	semi 	归约14: factor->val	
+0 2 8 4 10 25 	S semi id = factor 	semi 	归约12: term->factor	
+0 2 8 4 10 29 	S semi id = term 	semi 	归约10: expr->term	
+0 2 8 4 10 24 	S semi id = expr 	semi 	归约8: statement->id = expr	
+0 2 8 21 	S semi statement 	semi 	归约1: S->S semi statement	
+0 2 	S 	semi 	移入: semi	
+0 2 8 	S semi 	id 	移入: id	
+0 2 8 4 	S semi id 	= 	移入: =	
+0 2 8 4 10 	S semi id = 	integer 	移入: integer	
+0 2 8 4 10 28 	S semi id = integer 	semi 	归约16: val->integer	
+0 2 8 4 10 30 	S semi id = val 	semi 	归约14: factor->val	
+0 2 8 4 10 25 	S semi id = factor 	semi 	归约12: term->factor	
+0 2 8 4 10 29 	S semi id = term 	semi 	归约10: expr->term	
+0 2 8 4 10 24 	S semi id = expr 	semi 	归约8: statement->id = expr	
+0 2 8 21 	S semi statement 	semi 	归约1: S->S semi statement	
+0 2 	S 	semi 	移入: semi	
+0 2 8 	S semi 	id 	移入: id	
+0 2 8 4 	S semi id 	= 	移入: =	
+0 2 8 4 10 	S semi id = 	integer 	移入: integer	
+0 2 8 4 10 28 	S semi id = integer 	semi 	归约16: val->integer	
+0 2 8 4 10 30 	S semi id = val 	semi 	归约14: factor->val	
+0 2 8 4 10 25 	S semi id = factor 	semi 	归约12: term->factor	
+0 2 8 4 10 29 	S semi id = term 	semi 	归约10: expr->term	
+0 2 8 4 10 24 	S semi id = expr 	semi 	归约8: statement->id = expr	
+0 2 8 21 	S semi statement 	semi 	归约1: S->S semi statement	
+0 2 	S 	semi 	移入: semi	
+0 2 8 	S semi 	IF 	移入: IF	
+0 2 8 1 	S semi IF 	( 	移入: (	
+0 2 8 1 7 	S semi IF ( 	id 	移入: id	
+0 2 8 1 7 16 	S semi IF ( id 	op_cmp 	归约15: val->id	
+0 2 8 1 7 19 	S semi IF ( val 	op_cmp 	归约14: factor->val	
+0 2 8 1 7 14 	S semi IF ( factor 	op_cmp 	归约12: term->factor	
+0 2 8 1 7 18 	S semi IF ( term 	op_cmp 	归约10: expr->term	
+0 2 8 1 7 13 	S semi IF ( expr 	op_cmp 	移入: op_cmp	
+0 2 8 1 7 13 41 	S semi IF ( expr op_cmp 	integer 	移入: integer	
+0 2 8 1 7 13 41 36 	S semi IF ( expr op_cmp integer 	) 	归约16: val->integer	
+0 2 8 1 7 13 41 38 	S semi IF ( expr op_cmp val 	) 	归约14: factor->val	
+0 2 8 1 7 13 41 33 	S semi IF ( expr op_cmp factor 	) 	归约12: term->factor	
+0 2 8 1 7 13 41 37 	S semi IF ( expr op_cmp term 	) 	归约10: expr->term	
+0 2 8 1 7 13 41 53 	S semi IF ( expr op_cmp expr 	) 	归约18: test->expr op_cmp expr	
+0 2 8 1 7 12 	S semi IF ( test 	) 	移入: )	
+0 2 8 1 7 12 39 	S semi IF ( test ) 	{ 	移入: {	
+0 2 8 1 7 12 39 51 	S semi IF ( test ) { 	WHILE 	移入: WHILE	
+0 2 8 1 7 12 39 51 64 	S semi IF ( test ) { WHILE 	( 	移入: (	
+0 2 8 1 7 12 39 51 64 72 	S semi IF ( test ) { WHILE ( 	id 	移入: id	
+0 2 8 1 7 12 39 51 64 72 16 	S semi IF ( test ) { WHILE ( id 	op_cmp 	归约15: val->id	
+0 2 8 1 7 12 39 51 64 72 19 	S semi IF ( test ) { WHILE ( val 	op_cmp 	归约14: factor->val	
+0 2 8 1 7 12 39 51 64 72 14 	S semi IF ( test ) { WHILE ( factor 	op_cmp 	归约12: term->factor	
+0 2 8 1 7 12 39 51 64 72 18 	S semi IF ( test ) { WHILE ( term 	op_cmp 	归约10: expr->term	
+0 2 8 1 7 12 39 51 64 72 13 	S semi IF ( test ) { WHILE ( expr 	op_cmp 	移入: op_cmp	
+0 2 8 1 7 12 39 51 64 72 13 41 	S semi IF ( test ) { WHILE ( expr op_cmp 	integer 	移入: integer	
+0 2 8 1 7 12 39 51 64 72 13 41 36 	S semi IF ( test ) { WHILE ( expr op_cmp integer 	) 	归约16: val->integer	
+0 2 8 1 7 12 39 51 64 72 13 41 38 	S semi IF ( test ) { WHILE ( expr op_cmp val 	) 	归约14: factor->val	
+0 2 8 1 7 12 39 51 64 72 13 41 33 	S semi IF ( test ) { WHILE ( expr op_cmp factor 	) 	归约12: term->factor	
+0 2 8 1 7 12 39 51 64 72 13 41 37 	S semi IF ( test ) { WHILE ( expr op_cmp term 	) 	归约10: expr->term	
+0 2 8 1 7 12 39 51 64 72 13 41 53 	S semi IF ( test ) { WHILE ( expr op_cmp expr 	) 	归约18: test->expr op_cmp expr	
+0 2 8 1 7 12 39 51 64 72 79 	S semi IF ( test ) { WHILE ( test 	) 	移入: )	
+0 2 8 1 7 12 39 51 64 72 79 90 	S semi IF ( test ) { WHILE ( test ) 	{ 	移入: {	
+0 2 8 1 7 12 39 51 64 72 79 90 96 	S semi IF ( test ) { WHILE ( test ) { 	id 	移入: id	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 	S semi IF ( test ) { WHILE ( test ) { id 	= 	移入: =	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 	S semi IF ( test ) { WHILE ( test ) { id = 	integer 	移入: integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 85 	S semi IF ( test ) { WHILE ( test ) { id = integer 	+ 	归约16: val->integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 87 	S semi IF ( test ) { WHILE ( test ) { id = val 	+ 	归约14: factor->val	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 82 	S semi IF ( test ) { WHILE ( test ) { id = factor 	+ 	归约12: term->factor	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 86 	S semi IF ( test ) { WHILE ( test ) { id = term 	+ 	归约10: expr->term	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 81 	S semi IF ( test ) { WHILE ( test ) { id = expr 	+ 	移入: +	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 81 92 	S semi IF ( test ) { WHILE ( test ) { id = expr + 	integer 	移入: integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 81 92 85 	S semi IF ( test ) { WHILE ( test ) { id = expr + integer 	semi 	归约16: val->integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 81 92 87 	S semi IF ( test ) { WHILE ( test ) { id = expr + val 	semi 	归约14: factor->val	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 81 92 82 	S semi IF ( test ) { WHILE ( test ) { id = expr + factor 	semi 	归约12: term->factor	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 81 92 98 	S semi IF ( test ) { WHILE ( test ) { id = expr + term 	semi 	归约9: expr->expr + term	
+0 2 8 1 7 12 39 51 64 72 79 90 96 65 73 81 	S semi IF ( test ) { WHILE ( test ) { id = expr 	semi 	归约8: statement->id = expr	
+0 2 8 1 7 12 39 51 64 72 79 90 96 67 	S semi IF ( test ) { WHILE ( test ) { statement 	semi 	归约3: S->statement	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 	S semi IF ( test ) { WHILE ( test ) { S 	semi 	移入: semi	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 	S semi IF ( test ) { WHILE ( test ) { S semi 	id 	移入: id	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 	S semi IF ( test ) { WHILE ( test ) { S semi id 	= 	移入: =	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 	S semi IF ( test ) { WHILE ( test ) { S semi id = 	( 	移入: (	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( 	integer 	移入: integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 36 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( integer 	* 	归约16: val->integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 38 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( val 	* 	归约14: factor->val	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 33 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( factor 	* 	归约12: term->factor	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 37 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( term 	* 	移入: *	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 37 50 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( term * 	integer 	移入: integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 37 50 36 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( term * integer 	+ 	归约16: val->integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 37 50 38 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( term * val 	+ 	归约14: factor->val	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 37 50 61 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( term * factor 	+ 	归约11: term->term * factor	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 37 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( term 	+ 	归约10: expr->term	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 91 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( expr 	+ 	移入: +	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 91 48 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( expr + 	integer 	移入: integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 91 48 36 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( expr + integer 	) 	归约16: val->integer	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 91 48 38 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( expr + val 	) 	归约14: factor->val	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 91 48 33 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( expr + factor 	) 	归约12: term->factor	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 91 48 59 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( expr + term 	) 	归约9: expr->expr + term	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 91 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( expr 	) 	移入: )	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 80 91 97 	S semi IF ( test ) { WHILE ( test ) { S semi id = ( expr ) 	+ 	归约13: factor->( expr )	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 82 	S semi IF ( test ) { WHILE ( test ) { S semi id = factor 	+ 	归约12: term->factor	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 86 	S semi IF ( test ) { WHILE ( test ) { S semi id = term 	+ 	归约10: expr->term	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 81 	S semi IF ( test ) { WHILE ( test ) { S semi id = expr 	+ 	移入: +	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 81 92 	S semi IF ( test ) { WHILE ( test ) { S semi id = expr + 	float 	移入: float	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 81 92 83 	S semi IF ( test ) { WHILE ( test ) { S semi id = expr + float 	semi 	归约17: val->float	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 81 92 87 	S semi IF ( test ) { WHILE ( test ) { S semi id = expr + val 	semi 	归约14: factor->val	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 81 92 82 	S semi IF ( test ) { WHILE ( test ) { S semi id = expr + factor 	semi 	归约12: term->factor	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 81 92 98 	S semi IF ( test ) { WHILE ( test ) { S semi id = expr + term 	semi 	归约9: expr->expr + term	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 65 73 81 	S semi IF ( test ) { WHILE ( test ) { S semi id = expr 	semi 	归约8: statement->id = expr	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 77 	S semi IF ( test ) { WHILE ( test ) { S semi statement 	semi 	归约1: S->S semi statement	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 	S semi IF ( test ) { WHILE ( test ) { S 	semi 	移入: semi	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 70 	S semi IF ( test ) { WHILE ( test ) { S semi 	} 	归约2: S->S semi	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 	S semi IF ( test ) { WHILE ( test ) { S 	} 	移入: }	
+0 2 8 1 7 12 39 51 64 72 79 90 96 102 104 	S semi IF ( test ) { WHILE ( test ) { S } 	} 	归约7: statement->WHILE ( test ) { S }	
+0 2 8 1 7 12 39 51 67 	S semi IF ( test ) { statement 	} 	归约3: S->statement	
+0 2 8 1 7 12 39 51 62 	S semi IF ( test ) { S 	} 	移入: }	
+0 2 8 1 7 12 39 51 62 69 	S semi IF ( test ) { S } 	ELSE 	移入: ELSE	
+0 2 8 1 7 12 39 51 62 69 75 	S semi IF ( test ) { S } ELSE 	{ 	移入: {	
+0 2 8 1 7 12 39 51 62 69 75 88 	S semi IF ( test ) { S } ELSE { 	id 	移入: id	
+0 2 8 1 7 12 39 51 62 69 75 88 65 	S semi IF ( test ) { S } ELSE { id 	= 	移入: =	
+0 2 8 1 7 12 39 51 62 69 75 88 65 73 	S semi IF ( test ) { S } ELSE { id = 	integer 	移入: integer	
+0 2 8 1 7 12 39 51 62 69 75 88 65 73 85 	S semi IF ( test ) { S } ELSE { id = integer 	semi 	归约16: val->integer	
+0 2 8 1 7 12 39 51 62 69 75 88 65 73 87 	S semi IF ( test ) { S } ELSE { id = val 	semi 	归约14: factor->val	
+0 2 8 1 7 12 39 51 62 69 75 88 65 73 82 	S semi IF ( test ) { S } ELSE { id = factor 	semi 	归约12: term->factor	
+0 2 8 1 7 12 39 51 62 69 75 88 65 73 86 	S semi IF ( test ) { S } ELSE { id = term 	semi 	归约10: expr->term	
+0 2 8 1 7 12 39 51 62 69 75 88 65 73 81 	S semi IF ( test ) { S } ELSE { id = expr 	semi 	归约8: statement->id = expr	
+0 2 8 1 7 12 39 51 62 69 75 88 67 	S semi IF ( test ) { S } ELSE { statement 	semi 	归约3: S->statement	
+0 2 8 1 7 12 39 51 62 69 75 88 94 	S semi IF ( test ) { S } ELSE { S 	semi 	移入: semi	
+0 2 8 1 7 12 39 51 62 69 75 88 94 70 	S semi IF ( test ) { S } ELSE { S semi 	semi 	移入: semi	
+0 2 8 1 7 12 39 51 62 69 75 88 94 70 66 	S semi IF ( test ) { S } ELSE { S semi semi 	} 	归约4: S->semi	
+0 2 8 1 7 12 39 51 62 69 75 88 94 70 76 	S semi IF ( test ) { S } ELSE { S semi S 	} 	归约0: S->S semi S	
+0 2 8 1 7 12 39 51 62 69 75 88 94 	S semi IF ( test ) { S } ELSE { S 	} 	移入: }	
+0 2 8 1 7 12 39 51 62 69 75 88 94 100 	S semi IF ( test ) { S } ELSE { S } 	$ 	归约6: statement->IF ( test ) { S } ELSE { S }	
+0 2 8 21 	S semi statement 	$ 	归约1: S->S semi statement	
+0 2 	S 	$ 	接受

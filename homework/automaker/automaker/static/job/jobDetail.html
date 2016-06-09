@@ -1,0 +1,55 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="page-header content-title">
+
+                <h2 class="content-title-text">{{$ctrl.job.name}}
+
+                    <span class="label label-{{$ctrl.labelStatus($ctrl.job.status)}}">{{$ctrl.job.status}}</span>
+
+                </h2>
+
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <p>
+            <div class="btn-group btn-group-justified">
+                <a class="btn btn-{{$ctrl.runButtonStatus}}" ng-click="$ctrl.runJob()">{{$ctrl.runButtonText}}
+                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                </a>
+                <a class="btn btn-danger" ng-click="$ctrl.disableJob()">{{$ctrl.job.status == 'DEPRECATED' ? '启用' : '禁用'}}
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </a>
+            <!--
+                <a class="btn btn-info" ng-link="['./JobLog']">最新运行日志
+                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                </a>
+                -->
+
+                <a class="btn btn-success" ng-link="['./JobHistoryList']">历史纪录
+                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                </a>
+                <a class="btn btn-warning" ng-link="['./JobConfig']">设置
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                </a>
+            <a class="btn btn-purple" ng-link="['./Plan']">白盒性能测试计划
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            </a>
+
+            </div>
+            </p>
+        </div>
+        <div class="col-lg-12">
+            <div class="progress progress-striped {{$ctrl.progressActive}}">
+                <div class="progress-bar progress-bar-info " style="width: {{$ctrl.runProgress | number}}%">
+                    {{$ctrl.runProgress | number}}%
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <ng-outlet></ng-outlet>
+</div>
+
+

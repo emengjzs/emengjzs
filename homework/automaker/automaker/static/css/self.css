@@ -1,0 +1,184 @@
+body {
+    padding-top: 70px;
+}
+
+span.left-menu-first {
+    padding-left: 8px;
+}
+
+span.left-menu-second {
+    padding-left: 24px;
+}
+
+.nav-header.collapsed > span.glyphicon-chevron-toggle:before {
+    content: "\e114";
+}
+
+.nav-header > span.glyphicon-chevron-toggle:before {
+    content: "\e113";
+}
+
+form.login-form label {
+    padding-right: 0px;
+}
+
+select {
+    padding: 3px 20px;
+    color: #568188 !important;
+}
+
+#planTable .jqx-grid-cell-selected-bootstrap {
+    background-color: #3A87AD !important;
+}
+
+.info-field {
+    padding-top: 15px;
+}
+
+.assignmentstatus {
+    font-size: 14px; /*margin-top: 8px;*/
+    margin-right: 8px;
+}
+
+#jqxNotificationDefaultContainer-top-right {
+    right: 0px !important;
+}
+
+#main-nav {
+    width: 200px;
+}
+
+.content-title {
+    padding-bottom: 9px;
+    margin: 0px 0 0px;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.content-title-text {
+    margin-top: 5px;
+}
+
+.content-button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.nav > li.pill-info {
+    border-radius: 4px;
+    color: #ffffff;
+    background-color: #5fa291;
+    border-color: #559283;
+}
+
+.nav > li.pill-info > a {
+    color: #ffffff
+}
+
+.nav > li.pill-info > a:hover,
+.nav > li.pill-info > a:focus {
+    text-decoration: none;
+    background-color: #4f897a;
+    color: #ffffff
+}
+
+.nav > li.pill-info.disabled,
+.nav > li.pill-info.disabled > a:hover,
+.nav > li.pill-info.disabled > a:focus {
+    text-decoration: none;
+    /*background-color: #5fa291;*/
+    opacity: 0.65;
+    background-color: #5fa291;
+    color: #ffffff;
+}
+/*
+.glyphicon {
+    top: 2px;
+}
+*/
+.table > thead > tr > th.middle,
+.table > tbody > tr > th.middle,
+.table > tfoot > tr > th.middle,
+.table > thead > tr > td.middle,
+.table > tbody > tr > td.middle,
+.table > tfoot > tr.middle,
+td.middle {
+    text-align: center;
+    vertical-align: middle;
+}
+
+pre.log {
+    height: 400px;
+    margin: 0;
+}
+
+.btn-purple:hover,
+.btn-purple:focus,
+.btn-purple
+{
+    color: #ffffff;
+    background-color: #b627d2;
+    border-color: #b922d7;
+}
+
+.tree {
+    min-height:20px;
+    padding:19px;
+    margin-bottom:20px;
+    background-color:#fbfbfb;
+    border:1px solid #999;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)
+}
+.tree li {
+    list-style-type:none;
+    margin:0;
+    padding:10px 5px 0 5px;
+    position:relative
+}
+.tree li::before, .tree li::after {
+    content:'';
+    left:-20px;
+    position:absolute;
+    right:auto
+}
+.tree li::before {
+    border-left:1px solid #999;
+    bottom:50px;
+    height:100%;
+    top:0;
+    width:1px
+}
+.tree li::after {
+    border-top:1px solid #999;
+    height:20px;
+    top:25px;
+    width:25px
+}
+.tree li span {
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border:1px solid #999;
+    border-radius:5px;
+    display:inline-block;
+    padding:3px 8px;
+    text-decoration:none
+}
+.tree li.parent_li>span {
+    cursor:pointer
+}
+.tree>ul>li::before, .tree>ul>li::after {
+    border:0
+}
+.tree li:last-child::before {
+    height:25px
+}
+.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
+    background:#eee;
+    border:1px solid #94a0b4;
+    color:#000
+}
