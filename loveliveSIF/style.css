@@ -1,0 +1,46 @@
+.cardbox{
+	width: 90px;
+	height: 90px;
+	display: inline;
+	position: relative;
+	float:left;
+}
+
+.albumbox {
+	width: 480px;
+	height: 500px;
+}
+
+.cardbox a {
+	
+	background-color:#FFF;
+	padding:6px;
+	display:block;
+}
+
+.cardbox a:hover {
+
+	background-color:#FF669D;
+	text-decoration: none;
+}
+
+.cardbox a span {
+	display:none; 
+	text-align:center; 
+	font-size:12px;
+}
+
+.cardbox a:hover span {
+	color:#FFF;
+	display:block;
+	background-color:#333;
+	position:absolute;
+	top:90px;
+	left:0px;
+	line-height:20px;
+}
+
+.cardbox a img{
+	width:75px;
+	height:75px;
+}

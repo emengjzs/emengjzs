@@ -1,0 +1,19 @@
+S->S semi S
+S->S semi statement
+S->S semi
+S->statement
+S->semi
+statement->IF ( test ) { S }
+statement->IF ( test ) { S } ELSE { S }
+statement->WHILE ( test ) { S }
+statement->id = expr
+expr->expr + term
+expr->term
+term->term * factor
+term->factor
+factor->( expr )
+factor->val
+val->id
+val->integer
+val->float
+test->expr op_cmp expr

@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <div class="row">
+        <!-- 左侧导航栏 id = main-nav -->
+        <div class="col-sm-3 col-md-1 col-lg-2">
+            <ul id="main-nav" class="nav nav-tabs nav-stacked affix"
+                >
+                <li class="active">
+                    <a href="javascript:void(0)">
+                        <i class="glyphicon glyphicon-th-large">
+                            功能菜单
+                        </i>
+                    </a>
+                </li>
+
+                <li ng-repeat="feature in $ctrl.features">
+                    <a ng-if="feature.sublist.length" href="#{{$index}}" class="nav-header collapsed"
+                       data-toggle="collapse">
+                        <span class="glyphicon glyphicon-{{feature.icon}}"></span>
+                        <span class="left-menu-first">{{feature.name}}</span>
+                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                    </a>
+
+                    <a ng-if="feature.sublist.length == 0" href="#{{feature.url}}">
+                        <span class="glyphicon glyphicon-{{feature.icon}}"></span>
+                        <span class="left-menu-first">{{feature.name}}</span>
+                    </a>
+
+                    <ul id="{{$index}}" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                        <li ng-repeat="sublist in feature.sublist">
+                            <a ng-link="#['{{sublist.url}}']">
+                                <span class="left-menu-second glyphicon glyphicon-{{sublist.icon}}"></span>
+                                <span class="left-menu-first">{{sublist.name}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+        <!-- 左侧导航结束-->
+
+        <!-- 正文-->
+        <div class="col-sm-9 col-md-11 col-lg-10">
+            <bread></bread>
+
+            <ng-outlet></ng-outlet>
+
+        </div>
+    </div>
+</div>
+<msg></msg>

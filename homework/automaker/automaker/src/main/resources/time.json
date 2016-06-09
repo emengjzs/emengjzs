@@ -1,0 +1,21 @@
+{"methodName":"index","ClazzName":"cn.edu.nju.software.jzs.sample.controller.SampleController"}
+{"methodName":"service","ClazzName":"cn.edu.nju.software.jzs.sample.service.SampleService"}
+{"methodName":"service","ClazzName":"cn.edu.nju.software.jzs.sample.service.MiddleService"}
+{"duration":49736, "methodName":"service","ClazzName":"cn.edu.nju.software.jzs.sample.service.MiddleService",}
+{"methodName":"service","ClazzName":"cn.edu.nju.software.jzs.sample.service.ComplexService"}
+{"duration":100125, "methodName":"service","ClazzName":"cn.edu.nju.software.jzs.sample.service.ComplexService",}
+{"methodName":"service2","ClazzName":"cn.edu.nju.software.jzs.sample.service.MiddleService"}
+{"methodName":"service","ClazzName":"cn.edu.nju.software.jzs.sample.service.ComplexService"}
+{"duration":100166, "methodName":"service","ClazzName":"cn.edu.nju.software.jzs.sample.service.ComplexService",}
+{"duration":140743, "methodName":"service2","ClazzName":"cn.edu.nju.software.jzs.sample.service.MiddleService",}
+{"methodName":"<init>","ClazzName":"cn.edu.nju.software.jzs.sample.vo.HelloVo"}
+{"duration":314, "methodName":"<init>","ClazzName":"cn.edu.nju.software.jzs.sample.vo.HelloVo",}
+{"methodName":"setName","ClazzName":"cn.edu.nju.software.jzs.sample.vo.HelloVo"}
+{"duration":4, "methodName":"setName","ClazzName":"cn.edu.nju.software.jzs.sample.vo.HelloVo",}
+{"methodName":"setId","ClazzName":"cn.edu.nju.software.jzs.sample.vo.HelloVo"}
+{"duration":2, "methodName":"setId","ClazzName":"cn.edu.nju.software.jzs.sample.vo.HelloVo",}
+{"duration":291888, "methodName":"service","ClazzName":"cn.edu.nju.software.jzs.sample.service.SampleService",}
+{"duration":292099, "methodName":"index","ClazzName":"cn.edu.nju.software.jzs.sample.controller.SampleController",}
+{"methodName":"getId","ClazzName":"cn.edu.nju.software.jzs.sample.vo.HelloVo"}
+{"duration":0, "methodName":"getId","ClazzName":"cn.edu.nju.software.jzs.sample.vo.HelloVo",}
+{"methodName":"getName","ClazzName":"cn.edu.nju.software.jzs.sample.vo.HelloVo"}
