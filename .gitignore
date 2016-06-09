@@ -1,8 +1,6 @@
-﻿#################
+#################
 ## Eclipse
 #################
-*.jzs
-*.jar
 
 *.pydevproject
 .project
@@ -215,6 +213,4 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
-
-
-.idea/
+ED_AO/哈哈.txt
