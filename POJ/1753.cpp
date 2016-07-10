@@ -41,7 +41,7 @@ void change_color(int *a, int i) {
 int search(int *a, int length, int k) {
 
 
-    int *stack = new int[length];
+    int *stack = new int[k];
 
     int top_idx = 0;
     stack[top_idx] = -1;
@@ -56,10 +56,8 @@ int search(int *a, int length, int k) {
 
             int j = 0;
             for (j = 0; j < k; j++) {
-                cout << stack[j]
                 change_color(a, stack[j]);
             }
-            cout << endl;
             if (isFull(a)) {
                 delete[] stack;
                 return k;
