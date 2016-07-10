@@ -51,8 +51,6 @@ void find_solution(int *a, int *b) {
 
 		}
 	}
-	
-
 }
 
 
