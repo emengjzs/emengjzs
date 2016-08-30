@@ -4,12 +4,16 @@
 
 package emengjzs.emengdb.db;
 
+import emengjzs.emengdb.util.Converter;
+
+import java.nio.ByteBuffer;
 import java.util.Comparator;
 
 /**
  * Created by emengjzs on 2016/8/30.
  */
 public class MemTable {
+    public final static long MAX_SEQ = (0x01L << 56) - 1;
 
     private SkipList<byte[]> table;
 
@@ -21,7 +25,9 @@ public class MemTable {
     }
 
 
-    public void add(long seq, byte[] key, byte[] value)
+    public void add(long seq, byte[] key, byte[] value) {
+
+    }
 
     /**
      * a general key comparator where the key to be compared
@@ -45,27 +51,38 @@ public class MemTable {
     }
 
     class Key {
+
         byte[] bytes;
 
         Key(long seq, ValueType type, byte[] key, byte[] value) {
-            bytes = new byte[4 + key.length + 8 + 4 + value.length];
+            // bytes = new byte[4 + key.length + 8 + 4 + value.length];
             write(seq, type, key, value);
         }
 
         private void write(long seq, ValueType type, byte[] key, byte[] value) {
-            int i = 0;
-            i = write(i, BitConverter.(key.length + 8))
+            // use byteBuffer to simply operation
+            ByteBuffer bf = ByteBuffer.allocate(4 + key.length + 8 + 4 + value.length);
+            bf.putInt(key.length + 8)
+                    .put(key)
+                    .putLong(seq << 8 | type.toByte())
+                    .putInt(value.length)
+                    .put(value);
+            bf.flip();
+            // copy vs no-copy ?
+            this.bytes = bf.array();
         }
 
+        /*
         private int write(int start, byte[] bytes) {
             if (start + bytes.length >= bytes.length) {
                 throw new ArrayIndexOutOfBoundsException();
             }
             for (byte b : bytes) {
-                bytes[start ++] = b;
+                bytes[start++] = b;
             }
             return start;
         }
+        */
 
     }
 

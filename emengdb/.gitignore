@@ -58,3 +58,8 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+.gitignore
+emengdb.iml
+pom.xml
+src/
+target/

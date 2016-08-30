@@ -218,3 +218,6 @@ pip-log.txt
 
 
 .idea/
+bior/bior.py
+bior/test/biotest.py
+bior/test/__init__.py

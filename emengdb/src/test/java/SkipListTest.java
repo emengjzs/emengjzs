@@ -106,6 +106,10 @@ public class SkipListTest {
         });
     }
 
+    @Test
+    public void testMaxSeq() {
+        Assertions.assertThat((0x01L << 56) - 1).isGreaterThan(0L);
+    }
 
 }
 
