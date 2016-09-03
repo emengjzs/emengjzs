@@ -111,6 +111,20 @@ public class SkipListTest {
         Assertions.assertThat((0x01L << 56) - 1).isGreaterThan(0L);
     }
 
-}
+    @Test
+    public void testSpecifiedIterator() {
+        SkipList<Integer> skipList = new SkipList<>(Integer::compareTo);
+        Integer a[] = {2, 23, 24, 25, 266};
+
+        for (int x : a) {
+            skipList.insert(x);
+        }
+        assertThat(skipList.listIterator(24).next()).isEqualTo(24);
+        assertThat(skipList.listIterator(2).next()).isEqualTo(2);
+        assertThat(skipList.listIterator(266).next()).isEqualTo(266);
+        assertThat(skipList.listIterator(21).next()).isEqualTo(23);
+        assertThat(skipList.listIterator(276).hasNext()).isFalse();
+    }
+;}
 
 

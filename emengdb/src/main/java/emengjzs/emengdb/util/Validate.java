@@ -14,5 +14,9 @@ public class Validate {
             throw new IllegalArgumentException("Not True");
         }
     }
-
+    public static void isTrue(boolean v, String s) {
+        if (!v) {
+            throw new IllegalArgumentException(s);
+        }
+    }
 }

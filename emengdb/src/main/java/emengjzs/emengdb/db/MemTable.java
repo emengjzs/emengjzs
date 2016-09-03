@@ -4,8 +4,10 @@
 
 package emengjzs.emengdb.db;
 
-import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * Created by emengjzs on 2016/8/30.
@@ -17,7 +19,7 @@ public class MemTable {
 
 
     /**
-     * keyCmp<Key> -> interCmp<internalKey> -> userCmp<?>
+     * keyCmp;Key> -> interCmp\<internalKey> -> userCmp<?>
      */
     private KeyComparator keyComparator;
 
@@ -32,6 +34,24 @@ public class MemTable {
     }
 
 
+    public MemTableGetResult get(LookupKey lookupKey) {
+        ListIterator<Key> keyListIterator = table.listIterator(new Key(lookupKey));
+        // found the key
+        if (keyListIterator.hasNext()) {
+            Key next = keyListIterator.next();
+            if (keyComparator.interCmp.getUserComparator()
+                    .compare(next.getUserKey(), lookupKey.getUserKey()) == 0) {
+                if (next.getValueType() == ValueType.VALUE) {
+                    return new MemTableGetResult(next.getValue(), Status.SUCCESS);
+                }
+                else {
+                    return new MemTableGetResult(Status.DELETED);
+                }
+            }
+        }
+        return new MemTableGetResult(Status.NOT_FOUND);
+    }
+
 
     /**
      * a general key comparator where the key to be compared
@@ -40,7 +60,7 @@ public class MemTable {
      * the user-defined comparator to decide the position when putting a
      * entry
      */
-    class KeyComparator implements Comparator<Key> {
+    private class KeyComparator implements Comparator<Key> {
 
         InternalKeyComparator interCmp;
 
@@ -58,19 +78,49 @@ public class MemTable {
         @Override
         public int compare(Key o1, Key o2) {
             return interCmp.compare(
-                    o1.getInternalKey(),
-                    o2.getInternalKey());
+                    o1.getKey(),
+                    o2.getKey());
         }
     }
 
-    class Key {
+    interface Entry<K,V> {
+        /**
+         * here is internalKey
+         * @return
+         */
+        K getKey();
+        V getValue();
+    }
 
-        byte[] bytes;
+
+    class Key implements InternalKey, Entry<InternalKey, Slice> {
+        byte[] key;
+        long seqAndFlag;
+        byte[] value;
+
+
+        Key(LookupKey lookupKey) {
+            this.key = lookupKey.key;
+            this.seqAndFlag = lookupKey.seqAndFlag;
+            value = new byte[0];
+        }
+
+
+        Key(long seq, ValueType type, byte[] key) {
+            this(seq, type, key, new byte[0]);
+        }
+
+        /* byte[] bytes; */
 
         Key(long seq, ValueType type, byte[] key, byte[] value) {
             // bytes = new byte[4 + key.length + 8 + 4 + value.length];
-            write(seq, type, key, value);
+            // write(seq, type, key, value);
+            this.key = Arrays.copyOf(key, key.length);
+            this.seqAndFlag = seq << 8 | type.toByte();
+            this.value = Arrays.copyOf(value, value.length);
         }
+
+
 
         /**
          * encode the key, the format shows as below
@@ -86,6 +136,7 @@ public class MemTable {
          */
         private void write(long seq, ValueType type, byte[] key, byte[] value) {
             // use byteBuffer to simply operation
+            /*
             ByteBuffer bf = ByteBuffer.allocate(4 + key.length + 8 + 4 + value.length);
             bf.putInt(key.length + 8)
                     .put(key)
@@ -94,52 +145,110 @@ public class MemTable {
                     .put(value);
             // copy vs no-copy ?
             this.bytes = bf.array();
+            */
         }
 
 
-        // TODO: opt, reduce byte array copy?
-        // prefix + user_key + seq + TYPE
-        Slice getLengthPrefixedInternalKey() {
-            return new Slice(bytes, 0, 4 + toByteBuffer().getInt());
+
+
+        public Slice getUserKey() {
+            return new Slice(key);
         }
 
-        // user_key + seq + TYPE
-        Slice getInternalKey() {
-            return new Slice(bytes, 4, toByteBuffer().getInt());
+        public long getSeqFlag() {
+            return seqAndFlag;
         }
 
-        Slice getUserKey() {
-            return new Slice(bytes, 4, toByteBuffer().getInt() - 8);
+        public int getKeyLength() {
+            return key.length;
         }
 
-        long getSeqFlag() {
-            return new Slice(bytes, 4 + toByteBuffer().getInt() - 8, 8).toByteBuffer().getLong();
+        public long getSeq() {
+            return seqAndFlag >>> 8;
         }
 
-        Slice getValue() {
-            ByteBuffer byteBuffer = new Slice(bytes).toByteBuffer();
-            int interKeySize = byteBuffer.getInt();
-            byteBuffer.position(4 + interKeySize);
-            int valueSize = byteBuffer.getInt();
-            return new Slice(bytes, byteBuffer.position(), valueSize);
+        public ValueType getValueType() {
+            return ValueType.values()[(int) (seqAndFlag & 0xFF)];
         }
 
-        ByteBuffer toByteBuffer() {
-            return  ByteBuffer.wrap(bytes);
+
+        /**
+         * internal key
+         */
+        @Override
+        public InternalKey getKey() {
+            return this;
         }
 
-        /*
-        private int write(int start, byte[] bytes) {
-            if (start + bytes.length >= bytes.length) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-            for (byte b : bytes) {
-                bytes[start++] = b;
-            }
-            return start;
+        public Slice getValue() {
+            return new Slice(value);
         }
-        */
 
+
+    }
+
+    public ListIterator<Entry<InternalKey, Slice>> getIterator() {
+        return new MemTableIterator();
+    }
+
+    /*
+    public ListIterator<Key> getIterator(Slice userKey) {
+        return new MemTableIterator(new Key());
+    }
+       */
+
+    private class MemTableIterator implements ListIterator<Entry<InternalKey, Slice>> {
+
+        ListIterator<Key> itr;
+
+        MemTableIterator() {
+            itr = table.listIterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return itr.hasNext();
+        }
+
+        @Override
+        public Entry<InternalKey, Slice> next() {
+            return itr.next();
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return itr.hasPrevious();
+        }
+
+        @Override
+        public Entry<InternalKey, Slice> previous() {
+            return itr.previous();
+        }
+
+        @Override
+        public int nextIndex() {
+            return itr.nextIndex();
+        }
+
+        @Override
+        public int previousIndex() {
+            return itr.previousIndex();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(Entry<InternalKey, Slice> slice) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(Entry<InternalKey, Slice> slice) {
+            throw new UnsupportedOperationException();
+        }
     }
 
 }

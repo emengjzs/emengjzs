@@ -11,6 +11,7 @@ package emengjzs.emengdb.db;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 /**
  * A byte viewer, share the same byte array.
@@ -31,6 +32,12 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
         bytes = new byte[0];
         start = 0;
         length = 0;
+    }
+
+    public Slice(Slice s, boolean copy) {
+        this.bytes = copy ? s.toBytes() : s.bytes;
+        this.start = s.start;
+        this.length = s.length;
     }
 
     public Slice(byte[] bytes) {
@@ -60,6 +67,10 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
 
     public Slice getSubSlice(int start, int length) {
         return new Slice(bytes, this.start + start, length);
+    }
+
+    public Slice getDependentSlice(int start, int length) {
+        return new Slice(Arrays.copyOfRange(bytes, this.start + start, this.start + start + length));
     }
 
     public boolean isEmpty() {
@@ -123,4 +134,20 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
             return bytes[i ++];
         }
     }
+
+    public void forEach(ByteConsumer action) {
+        forEachInRange(0, length, action);
+    }
+
+
+    public void forEachInRange(int i,  ByteConsumer consumer) {
+        forEachInRange(i, length, consumer);
+    }
+
+    public void forEachInRange(int i, int length, ByteConsumer consumer) {
+        for (int s = i + this.start, e = start + length; s < e; s ++ ) {
+            consumer.accept(bytes[s]);
+        }
+    }
+
 }

@@ -37,15 +37,15 @@ public class SkipList<E> {
         this.cmp = cmp;
         this.height = 1;
         this.random = new Random();
-        this.head = new Node<E>( null, MAX_HEIGHT);
-        for (int i = 0; i < MAX_HEIGHT; ++ i) {
+        this.head = new Node<E>(null, MAX_HEIGHT);
+        for (int i = 0; i < MAX_HEIGHT; ++i) {
             head.setNext(i, null);
         }
     }
 
     private boolean isKeyAfterNode(E key, Node<E> node) {
         // assume that a null node has key that greater than any another key.
-        return (node !=  null) && (cmp.compare(node.key, key) < 0);
+        return (node != null) && (cmp.compare(node.key, key) < 0);
     }
 
 
@@ -66,14 +66,14 @@ public class SkipList<E> {
 
         if (nodeHeight > this.height) {
 
-            for (int i = height; i < nodeHeight; i ++ ) {
+            for (int i = height; i < nodeHeight; i++) {
                 prev[i] = head;
             }
 
             this.height = nodeHeight;
         }
 
-        for (int i = 0; i < nodeHeight; i ++ ) {
+        for (int i = 0; i < nodeHeight; i++) {
             x.setNext(i, prev[i].getNext(i));
             prev[i].setNext(i, x);
         }
@@ -85,9 +85,9 @@ public class SkipList<E> {
     private int getRandomHeight() {
         int height = 1;
         while (height < MAX_HEIGHT && random.nextDouble() < 0.25) {
-            height ++;
+            height++;
         }
-        return  height;
+        return height;
     }
 
     private Node<E> findGreaterOrEqual(E key) {
@@ -96,23 +96,40 @@ public class SkipList<E> {
 
 
     private Node<E> findGreaterOrEqual(E key, Node[] prev) {
-        Node<E> cur = head;
+        Node<E> current = head;
+        Node<E> next = null;
         int index = height - 1;
         while (true) {
             // still ok when height has increased.
-            Node<E> next = cur.getNext(index);
+            next = current.getNext(index);
             if (isKeyAfterNode(key, next)) {
-                cur = next;
-            }
-            else {
+                current = next;
+            } else {
                 if (prev != null) {
-                    prev[index] = cur;
+                    prev[index] = current;
                 }
                 if (index == 0) {
                     return next;
+                } else {
+                    index--;
                 }
-                else {
-                    index --;
+            }
+        }
+    }
+
+    private Node<E> findLessThan(E key) {
+        Node<E> current = head;
+        Node<E> next = null;
+        int index = height - 1;
+        while (true) {
+            next = current.getNext(index);
+            if (isKeyAfterNode(key, next)) {
+                current = next;
+            } else {
+                if (index == 0) {
+                    return current;
+                } else {
+                    index--;
                 }
             }
         }
@@ -124,39 +141,19 @@ public class SkipList<E> {
         Node<E> next = null;
         int index = height - 1;
         while (true) {
-
             if ((next = cur.getNext(0)) != null) {
                 cur = next;
-            }
-            else {
+            } else {
                 if (index == 0) {
                     return cur;
-                }
-                else {
-                    index --;
+                } else {
+                    index--;
                 }
             }
         }
     }
 
-    private Node<E> findLessThan(E key) {
-        int index = height - 1;
-        Node<E> current = head;
-        while (true) {
-            Node<E> next = current.getNext(index);
-            if (isKeyAfterNode(key, next)) {
-                current = next;
-            }
-            else {
-                if (index == 0) {
-                    return current;
-                }
-                else {
-                    index --;
-                }
-            }
-        }
-    }
+
 
     private static class Node<E> {
         // final constraints make sure that the object is fully visible after
@@ -188,14 +185,28 @@ public class SkipList<E> {
         return new SkipListIterator();
     }
 
+    /**
+     * return a iterator where the next key is equal or greater than the key.
+     * if such key is not exited, the return value of next() is null.
+     * @param key
+     * @return
+     */
+    public ListIterator<E> listIterator(E key) {
+        return new SkipListIterator(findLessThan(key));
+    }
+
     public class SkipListIterator implements ListIterator<E> {
 
-        private int index;
+        // private int index;
         private Node<E> current;
 
         SkipListIterator() {
-            index = 0;
+            // index = 0;
             current = head;
+        }
+
+        SkipListIterator(Node<E> current) {
+            this.current = current;
         }
 
 
@@ -206,10 +217,10 @@ public class SkipList<E> {
 
         @Override
         public E next() {
-            if (! hasNext()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            index ++;
+            // index++;
             current = current.getNext(0);
             return current.key;
         }
@@ -221,7 +232,7 @@ public class SkipList<E> {
 
         @Override
         public E previous() {
-            if (! hasPrevious()) {
+            if (!hasPrevious()) {
                 throw new NoSuchElementException();
             }
             current = findLessThan(current.key);
@@ -230,12 +241,12 @@ public class SkipList<E> {
 
         @Override
         public int nextIndex() {
-            return index;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int previousIndex() {
-            return index - 1;
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -257,7 +268,7 @@ public class SkipList<E> {
          * must invoke hasNext() , next() to get the first element
          */
         public void seekToFirst() {
-            index = 0;
+            // index = 0;
             current = head;
         }
 
