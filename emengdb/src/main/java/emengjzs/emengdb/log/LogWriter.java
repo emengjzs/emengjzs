@@ -20,28 +20,7 @@ public class LogWriter implements LogFormat {
         this.writableFile = writableFile;
     }
 
-    /**
-     * - log file contains sequences of blocks.
-     * - each may contains sequences of records, and their sizes may
-     * be not the same.
-     * - the record must stay only in a block
-     * - data is divided into a few records.
-     * +----------------------------------------+-----+---------+  \
-     * |   record   |            record         | ... |  record |   |---> Block 32 KB
-     * |--------------------------------------------------------+  /
-     * |              record            |    record   |  record |
-     * +--------------------------------------------------------+
-     * |                        ...                             |
-     * +--------------------------------------------------------+
-     *
-     * record:
-     * +-------------------+--------------+--------+--------------------+
-     * |        CRC        |    length    |  type  |        data        |
-     * +-------------------+--------------+--------+--------------------+
-     * |          4                2           1             length     |
-     *
-     * @param data
-     */
+
     public void addData(Slice data) {
         int leftSize = data.getLength();
         int blockLeftSize = K_BLOCK_SIZE - blockOffset;

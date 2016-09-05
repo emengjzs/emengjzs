@@ -9,21 +9,21 @@ package emengjzs.emengdb.db;
  */
 
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 /**
  * A byte viewer, share the same byte array.
  */
 public class Slice implements Iterable<Byte>, Comparable<Slice> {
-
+    public final static Charset UTF8_CHARSET = Charset.forName("utf8");
     private final byte[] bytes;
     private final int start;
     private final int length;
 
     public Slice(String s) {
-        bytes = s.getBytes();
+        bytes = s.getBytes(UTF8_CHARSET);
         start = 0;
         length = bytes.length;
     }
@@ -54,7 +54,7 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
 
     public Slice(byte[] bytes, int start, int length) {
         this.bytes = bytes;
-        this.start = bytes.length <= start ?  bytes.length : start;
+        this.start = bytes.length <= start ? bytes.length : start;
         this.length = bytes.length - this.start < length ? bytes.length - this.start : length;
     }
 
@@ -82,11 +82,19 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
     }
 
     public String toString() {
-        return new String(bytes, start, length);
+        return new String(bytes, start, length, UTF8_CHARSET);
+    }
+
+    public String toByteString() {
+        StringBuilder stringBuilder = new StringBuilder(length * 2);
+        forEach((b) -> {
+            stringBuilder.append(Integer.toHexString(b & 0xFF)).append(" ");
+        });
+        return stringBuilder.toString();
     }
 
     public byte[] toBytes() {
-        return Arrays.copyOfRange(bytes, start, start+ length);
+        return Arrays.copyOfRange(bytes, start, start + length);
     }
 
     @Override
@@ -109,17 +117,18 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
     @Override
     public int compareTo(Slice o) {
         int minLen = o.length < this.length ? length : o.length;
-        for (int i = 0; i < minLen; i ++) {
+        for (int i = 0; i < minLen; i++) {
             if (get(i) - o.get(i) != 0) {
-                return get(i) - o.get(i);
+                return (0xFF & get(i)) - (0xFF & o.get(i));
             }
         }
         return this.length - o.length;
     }
 
 
-    class Itr implements Iterator<Byte> {
+    private class Itr implements Iterator<Byte> {
         int i = start;
+
         Itr() {
 
         }
@@ -131,7 +140,7 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
 
         @Override
         public Byte next() {
-            return bytes[i ++];
+            return bytes[i++];
         }
     }
 
@@ -140,12 +149,12 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
     }
 
 
-    public void forEachInRange(int i,  ByteConsumer consumer) {
+    public void forEachInRange(int i, ByteConsumer consumer) {
         forEachInRange(i, length, consumer);
     }
 
     public void forEachInRange(int i, int length, ByteConsumer consumer) {
-        for (int s = i + this.start, e = start + length; s < e; s ++ ) {
+        for (int s = i + this.start, e = start + length; s < e; s++) {
             consumer.accept(bytes[s]);
         }
     }

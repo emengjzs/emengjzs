@@ -9,12 +9,21 @@ import java.io.RandomAccessFile;
 /**
  * Created by emengjzs on 2016/9/3.
  */
+
+/**
+ * Not required to be thread safe
+ */
 public class LogReader {
 
-    RandomAccessFile randomAccessFile;
+    private RandomAccessFile randomAccessFile;
+    private long initialOffset;
 
 
-    LogReader() {
-        // randomAccessFile.
+    LogReader(RandomAccessFile file, long initialOffset) {
+        this.randomAccessFile = file;
+        this.initialOffset = initialOffset;
     }
+
+
+
 }
