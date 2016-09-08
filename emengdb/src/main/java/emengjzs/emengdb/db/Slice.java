@@ -86,7 +86,7 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
     }
 
     public String toByteString() {
-        StringBuilder stringBuilder = new StringBuilder(length * 2);
+        StringBuilder stringBuilder = new StringBuilder(length * 3);
         forEach((b) -> {
             stringBuilder.append(Integer.toHexString(b & 0xFF)).append(" ");
         });

@@ -18,6 +18,15 @@ public enum RecordType {
     LAST_TYPE(4);
 
     int id;
+    final static int NUMS = RecordType.values().length;
+
+    static RecordType of(int id) throws LogFileException {
+        if (id < 0 || id > NUMS) {
+            throw new LogFileException(LogFileException.Type.UNKNOWN_RECORD_TYPE_ERROR);
+        }
+        return RecordType.values()[id];
+    }
+
 
     RecordType(int id) {
         this.id = id;

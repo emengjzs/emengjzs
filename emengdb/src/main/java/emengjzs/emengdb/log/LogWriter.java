@@ -6,12 +6,14 @@ package emengjzs.emengdb.log;
 
 import emengjzs.emengdb.db.Slice;
 import emengjzs.emengdb.util.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by emengjzs on 2016/9/2.
  */
 public class LogWriter implements LogFormat {
-
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private WritableFile writableFile;
 
     private int blockOffset = 0;
@@ -65,11 +67,17 @@ public class LogWriter implements LogFormat {
 
     private int addRecord(RecordType type, Slice data, int start, int length) {
         // omit the part of CRC
-        writableFile.add(new Slice(new byte[]{0x12, 0x34, 0x56, 0x78}));
+        writableFile.add((int) 0x12345678);
         writableFile.add((short) (length & 0xFFFF));
         writableFile.add((byte) type.id);
         writableFile.add(data.getSubSlice(start, length));
         writableFile.flush();
+
+        if (log.isDebugEnabled()) {
+            log.debug("[LOG FILE] Write: {}, {} - [{}]",
+                    type.toString(), length, data.getSubSlice(start, length).toByteString());
+        }
+
         return K_HEADER_SIZE + length;
     }
 }
