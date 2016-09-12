@@ -9,10 +9,12 @@ import emengjzs.emengdb.util.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 /**
  * Created by emengjzs on 2016/9/2.
  */
-public class LogWriter implements LogFormat {
+public class LogWriter extends LogFormat {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private WritableFile writableFile;
 
@@ -23,19 +25,29 @@ public class LogWriter implements LogFormat {
     }
 
 
-    public void addData(Slice data) {
+    public void addData(Slice data) throws IOException {
         int leftSize = data.getLength();
-        int blockLeftSize = K_BLOCK_SIZE - blockOffset;
+        int blockLeftSize = 0;
+
+        // the start index of the data to be read.
         int start = 0;
+
         RecordType type = RecordType.FIRST_TYPE;
         while (leftSize > 0) {
+            blockLeftSize = K_BLOCK_SIZE - blockOffset;
             if (blockLeftSize < K_HEADER_SIZE) {
 
                 if (blockLeftSize > 0) {
                     // fill zero
-                    writableFile.add(new Slice(new byte[]{0, 0, 0, 0, 0, 0}, 0, blockLeftSize));
+                    writableFile.write(new Slice(new byte[]{0, 0, 0, 0, 0, 0}, 0, blockLeftSize));
                 }
                 // next new bolck
+
+                /*
+                if (log.isDebugEnabled()) {
+                    log.debug("[LOG FILE] New Block : -{}", blockLeftSize);
+                }
+*/
                 blockOffset = 0;
                 blockLeftSize = K_BLOCK_SIZE;
             }
@@ -54,10 +66,11 @@ public class LogWriter implements LogFormat {
                 leftSize = 0;
             }
             else {
+
+                blockOffset += addRecord(type, data, start, blockAvailSize);
                 if (type == RecordType.FIRST_TYPE) {
                     type = RecordType.MIDDLE_TYPE;
                 }
-                blockOffset += addRecord(type, data, start, blockAvailSize);
                 start += (blockAvailSize);
                 leftSize -= (blockAvailSize);
             }
@@ -65,17 +78,19 @@ public class LogWriter implements LogFormat {
         }
     }
 
-    private int addRecord(RecordType type, Slice data, int start, int length) {
+    private int addRecord(RecordType type, Slice data, int start, int length) throws IOException {
         // omit the part of CRC
-        writableFile.add((int) 0x12345678);
-        writableFile.add((short) (length & 0xFFFF));
-        writableFile.add((byte) type.id);
-        writableFile.add(data.getSubSlice(start, length));
+        writableFile.write((int) 0x12345678);
+        writableFile.write((short) (length & 0xFFFF));
+        writableFile.write((byte) type.id);
+        writableFile.write(data.getSubSlice(start, length));
         writableFile.flush();
 
         if (log.isDebugEnabled()) {
             log.debug("[LOG FILE] Write: {}, {} - [{}]",
-                    type.toString(), length, data.getSubSlice(start, length).toByteString());
+                    type.toString(),
+                    length,
+                    data.getSubSlice(start, length).toByteString());
         }
 
         return K_HEADER_SIZE + length;

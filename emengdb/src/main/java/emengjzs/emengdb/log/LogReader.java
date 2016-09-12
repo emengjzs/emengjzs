@@ -20,9 +20,9 @@ import static emengjzs.emengdb.log.LogFileException.Type.RECORD_DATA_ERRPR;
  */
 
 /**
- * Not required to be thread safe
+ * Need external synchronization to be thread safe
  */
-public class LogReader implements LogFormat {
+public class LogReader extends LogFormat {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private LogErrorListener logErrorListener;
 

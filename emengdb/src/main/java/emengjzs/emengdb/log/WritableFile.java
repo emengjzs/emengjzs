@@ -5,19 +5,17 @@
 package emengjzs.emengdb.log;
 
 import emengjzs.emengdb.db.Slice;
+import emengjzs.emengdb.util.PrimitiveWritable;
+
+import java.io.IOException;
 
 /**
  * Created by emengjzs on 2016/9/3.
  */
-public interface WritableFile {
+public interface WritableFile extends PrimitiveWritable{
 
-    void sync();
-    void close();
-    void flush();
-    void add(Slice data);
-    void add(byte b);
-    void add(short s);
-    void add(int i);
-    void add(long l);
+    void sync() throws IOException;
+    void write(Slice data) throws IOException;
+
 
 }

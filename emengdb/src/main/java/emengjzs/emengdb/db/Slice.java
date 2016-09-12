@@ -8,6 +8,8 @@ package emengjzs.emengdb.db;
  * Created by emengjzs on 2016/8/30.
  */
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -97,6 +99,10 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
         return Arrays.copyOfRange(bytes, start, start + length);
     }
 
+    public void outPut(OutputStream out) throws IOException {
+        out.write(bytes, this.start, this.length);
+    }
+
     @Override
     public Iterator<Byte> iterator() {
         return new Itr();
@@ -143,6 +149,9 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
             return bytes[i++];
         }
     }
+
+
+
 
     public void forEach(ByteConsumer action) {
         forEachInRange(0, length, action);

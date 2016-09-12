@@ -30,13 +30,13 @@ package emengjzs.emengdb.log;
  * |          4                2           1             length     |
  *
  */
-public interface LogFormat {
+public class LogFormat {
 
-    RecordType MAX_RECORD_SIZE = RecordType.LAST_TYPE;
+    static RecordType MAX_RECORD_SIZE = RecordType.LAST_TYPE;
 
-    int K_BLOCK_SIZE = 32768;
+    static int K_BLOCK_SIZE = 32768;
 
-    int K_HEADER_SIZE = 4 + 1 + 2;
+    static int K_HEADER_SIZE = 4 + 1 + 2;
 }
 
 
