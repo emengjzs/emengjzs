@@ -20,9 +20,9 @@ import java.util.Iterator;
  */
 public class Slice implements Iterable<Byte>, Comparable<Slice> {
     public final static Charset UTF8_CHARSET = Charset.forName("utf8");
-    private final byte[] bytes;
-    private final int start;
-    private final int length;
+    private byte[] bytes;
+    private int start;
+    private int length;
 
     public Slice(String s) {
         bytes = s.getBytes(UTF8_CHARSET);
@@ -101,6 +101,12 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
 
     public void outPut(OutputStream out) throws IOException {
         out.write(bytes, this.start, this.length);
+    }
+
+    public void clear() {
+        bytes = new byte[0];
+        start = 0;
+        length = 0;
     }
 
     @Override

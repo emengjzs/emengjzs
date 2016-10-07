@@ -8,6 +8,7 @@ import emengjzs.emengdb.db.Slice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -34,6 +35,7 @@ public class LogReader extends LogFormat {
         this.randomAccessFile = file;
         this.initialOffset = initialOffset;
         bf = ByteBuffer.allocate(K_BLOCK_SIZE);
+        seekToInitBlock();
     }
 
     private void seekToInitBlock() {
@@ -41,21 +43,75 @@ public class LogReader extends LogFormat {
         long blockOffSet = initialOffset - inBlockOffSet;
         try {
             randomAccessFile.seek(blockOffSet);
+            readNextBlock(bf);
         } catch (IOException e) {
             log.error("InitialOffset overlap.");
         }
     }
 
 
-    Slice readNextData() {
-        return null;
+
+    Slice readNextData() throws LogFileException {
+        ByteArrayOutputStream byteBuilder = new ByteArrayOutputStream(64);
+        RecordType type;
+        Slice slice;
+        boolean inReading = false;
+
+        while (true) {
+            type = readNextRecord(bf, byteBuilder);
+
+            switch (type) {
+                case FIRST_TYPE: {
+                    if ( ! inReading) {
+                        inReading = true;
+                    }
+                    else {
+                        throw new LogFileException(LogFileException.Type.RECORD_DATA_ERRPR);
+                    }
+                    break;
+                }
+
+                case FULL_TYPE: {
+                    if (! inReading) {
+                        inReading = true;
+                        return new Slice(byteBuilder.toByteArray());
+                    }
+                    else {
+                        throw new LogFileException(LogFileException.Type.RECORD_DATA_ERRPR);
+                    }
+                }
+
+                case MIDDLE_TYPE: {
+                    if (! inReading) {
+                        throw new LogFileException(LogFileException.Type.RECORD_DATA_ERRPR);
+                    }
+                    break;
+                }
+
+                case LAST_TYPE: {
+                    if (! inReading) {
+                        throw new LogFileException(LogFileException.Type.RECORD_DATA_ERRPR);
+                    }
+                    return new Slice(byteBuilder.toByteArray());
+                }
+
+                default: {
+                    throw new LogFileException(LogFileException.Type.UNKNOWN_RECORD_TYPE_ERROR);
+                }
+
+            }
+
+        }
+
+
     }
 
 
-    Slice readNextRecord(ByteBuffer bf) throws LogFileException {
+    RecordType readNextRecord(ByteBuffer bf, ByteArrayOutputStream byteBuilder) throws LogFileException {
         try {
-            if (bf.remaining() <= 0 && (! readNextBlock(bf))) {
-                return null;
+            // skip short dummy zero
+            if (bf.remaining() < K_HEADER_SIZE && (! readNextBlock(bf))) {
+                return RecordType.EOF;
             }
             // CRC omit
             int crc = bf.getInt();
@@ -66,10 +122,18 @@ public class LogReader extends LogFormat {
                 throw new LogFileException(RECORD_DATA_ERRPR);
             }
 
-            // return a viewer of bytearray in bytebuffer to
-            // avoid byte array copy.
-            Slice record = new Slice(bf.array(), bf.arrayOffset() + bf.position(), length);
+            if (log.isDebugEnabled()) {
+                log.debug("[LOG FILE] Read: {}, {} - [{}]",
+                        type.toString(),
+                        length,
+                        new Slice(bf.array(), bf.arrayOffset() + bf.position(), length).toByteString());
+            }
 
+            for (int i = 0; i < length; i ++) {
+                byteBuilder.write(bf.get());
+            }
+            // Slice record = new Slice(bf.array(), bf.arrayOffset() + bf.position(), length);
+            // byteBuilder.write(bf.array(), bf.arrayOffset() + bf.position(), length);
 
 
 
@@ -77,11 +141,8 @@ public class LogReader extends LogFormat {
                 throw new LogFileException(LogFileException.Type.CRC_NOT_MATCH_ERROR);
             }
 
-            if (log.isDebugEnabled()) {
-                log.debug("[LOG FILE] Read: {}, {} - [{}]",
-                        type.toString(), length, record.toByteString());
-            }
-            return record;
+
+            return type;
 
         } catch (IOException e) {
             e.printStackTrace();

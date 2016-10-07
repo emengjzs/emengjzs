@@ -15,7 +15,8 @@ public enum RecordType {
     FULL_TYPE(1),
     FIRST_TYPE(2),
     MIDDLE_TYPE(3),
-    LAST_TYPE(4);
+    LAST_TYPE(4),
+    EOF(5);
 
     int id;
     final static int NUMS = RecordType.values().length;

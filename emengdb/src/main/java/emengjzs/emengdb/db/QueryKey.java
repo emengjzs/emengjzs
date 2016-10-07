@@ -17,7 +17,7 @@ public class QueryKey {
     public QueryKey(long seq, Slice userKey) {
         this.seq = seq;
         type = ValueType.VALUE;
-        userKey = new Slice(userKey, true);
+        this.userKey = new Slice(userKey, true);
     }
 
     public Slice getUserKey() {

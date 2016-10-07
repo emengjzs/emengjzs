@@ -6,6 +6,7 @@ package emengjzs.emengdb.log;
 
 import emengjzs.emengdb.db.Slice;
 import emengjzs.emengdb.util.Validate;
+import emengjzs.emengdb.util.WritableFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class LogWriter extends LogFormat {
         this.writableFile = writableFile;
     }
 
-
+    // TODO: consider the zero-length empty data
     public void addData(Slice data) throws IOException {
         int leftSize = data.getLength();
         int blockLeftSize = 0;

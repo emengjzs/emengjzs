@@ -2,10 +2,9 @@
  * Copyright (c) 2016. emengjzs. All rights reserved.
  */
 
-package emengjzs.emengdb.log;
+package emengjzs.emengdb.util;
 
 import emengjzs.emengdb.db.Slice;
-import emengjzs.emengdb.util.PrimitiveWritable;
 
 import java.io.IOException;
 
