@@ -5,8 +5,9 @@
 package emengjzs.emengdb.log;
 
 import emengjzs.emengdb.db.Slice;
+import emengjzs.emengdb.util.Bits;
 import emengjzs.emengdb.util.Validate;
-import emengjzs.emengdb.util.WritableFile;
+import emengjzs.emengdb.util.io.WritableFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ public class LogWriter extends LogFormat {
 
                 if (blockLeftSize > 0) {
                     // fill zero
-                    writableFile.write(new Slice(new byte[]{0, 0, 0, 0, 0, 0}, 0, blockLeftSize));
+                    writableFile.write(new byte[]{0, 0, 0, 0, 0, 0}, 0, blockLeftSize);
                 }
                 // next new bolck
 
@@ -81,19 +82,21 @@ public class LogWriter extends LogFormat {
 
     private int addRecord(RecordType type, Slice data, int start, int length) throws IOException {
         // omit the part of CRC
-        writableFile.write((int) 0x12345678);
-        writableFile.write((short) (length & 0xFFFF));
-        writableFile.write((byte) type.id);
+        byte header[] = new byte[7];
+        Bits.putInt(header, 0, 0x12345678);
+        Bits.putShort(header, 4, (short) (length & 0xFFFF));
+        header[6] = (byte) type.id;
+        writableFile.write(header);
         writableFile.write(data.getSubSlice(start, length));
         writableFile.flush();
-
+        /*
         if (log.isDebugEnabled()) {
             log.debug("[LOG FILE] Write: {}, {} - [{}]",
                     type.toString(),
                     length,
                     data.getSubSlice(start, length).toByteString());
         }
-
+        */
         return K_HEADER_SIZE + length;
     }
 }

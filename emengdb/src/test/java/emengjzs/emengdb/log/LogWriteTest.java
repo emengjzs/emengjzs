@@ -5,14 +5,14 @@
 package emengjzs.emengdb.log;
 
 import emengjzs.emengdb.db.Slice;
-import emengjzs.emengdb.util.DiskWritableFile;
+import emengjzs.emengdb.util.io.MmapWriterableFile;
+import emengjzs.emengdb.util.io.WritableFile;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class LogWriteTest {
 
     LogReader reader;
     LogWriter writer;
-    DiskWritableFile diskWritableFile;
+    WritableFile diskWritableFile;
 
     final String fileName = "testLog.log";
     final int turns = 10000;
@@ -38,10 +38,10 @@ public class LogWriteTest {
     List<String> DataSet;
 
     @Before
-    public void init() throws FileNotFoundException {
+    public void init() throws IOException {
         LogFormat.K_BLOCK_SIZE = 1024;
         DataSet = new ArrayList<>(turns + 2);
-        diskWritableFile = new DiskWritableFile(fileName);
+        diskWritableFile = new MmapWriterableFile(fileName, 0);
         writer = new LogWriter(diskWritableFile);
     }
 
@@ -60,10 +60,11 @@ public class LogWriteTest {
             writer.addData(new Slice(str));
             DataSet.add(str);
         }
+        System.out.print("write !");
         diskWritableFile.flush();
         diskWritableFile.sync();
         diskWritableFile.close();
-
+        System.out.print("write !");
         RandomAccessFile r = new RandomAccessFile(fileName, "r");
         reader = new LogReader(r, 0);
         for (String str : DataSet) {
@@ -76,6 +77,7 @@ public class LogWriteTest {
     @After
     public void clearFile() {
         (new File(fileName)).delete();
+        Assertions.assertThat((new File(fileName)).exists()).isFalse();
     }
 
 }

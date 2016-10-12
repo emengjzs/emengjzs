@@ -2,7 +2,7 @@
  * Copyright (c) 2016. emengjzs. All rights reserved.
  */
 
-package emengjzs.emengdb.util;
+package emengjzs.emengdb.util.io;
 
 import java.io.Closeable;
 import java.io.Flushable;

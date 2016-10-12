@@ -95,6 +95,14 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
         return stringBuilder.toString();
     }
 
+    public int getStart() {
+        return  start;
+    }
+
+    public byte[] array() {
+        return bytes;
+    }
+
     public byte[] toBytes() {
         return Arrays.copyOfRange(bytes, start, start + length);
     }
@@ -102,6 +110,15 @@ public class Slice implements Iterable<Byte>, Comparable<Slice> {
     public void outPut(OutputStream out) throws IOException {
         out.write(bytes, this.start, this.length);
     }
+
+    public void outPut(ByteBuffer out) throws IOException {
+        out.put(bytes, this.start, this.length);
+    }
+
+    public void outPut(ByteBuffer out, int offset, int length) throws IOException {
+        out.put(bytes, this.start + offset, length);
+    }
+
 
     public void clear() {
         bytes = new byte[0];

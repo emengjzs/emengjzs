@@ -5,8 +5,8 @@
 package emengjzs.emengdb.log;
 
 import emengjzs.emengdb.db.Slice;
-import emengjzs.emengdb.util.PrimitiveWritableOutputStream;
-import emengjzs.emengdb.util.WritableFile;
+import emengjzs.emengdb.util.io.PrimitiveWritableOutputStream;
+import emengjzs.emengdb.util.io.WritableFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;

@@ -122,13 +122,14 @@ public class LogReader extends LogFormat {
                 throw new LogFileException(RECORD_DATA_ERRPR);
             }
 
+             /*
             if (log.isDebugEnabled()) {
                 log.debug("[LOG FILE] Read: {}, {} - [{}]",
                         type.toString(),
                         length,
                         new Slice(bf.array(), bf.arrayOffset() + bf.position(), length).toByteString());
             }
-
+            */
             for (int i = 0; i < length; i ++) {
                 byteBuilder.write(bf.get());
             }

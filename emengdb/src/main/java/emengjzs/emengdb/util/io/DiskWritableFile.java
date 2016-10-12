@@ -2,13 +2,11 @@
  * Copyright (c) 2016. emengjzs. All rights reserved.
  */
 
-package emengjzs.emengdb.util;
+package emengjzs.emengdb.util.io;
 
 import emengjzs.emengdb.db.Slice;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Created by emengjzs on 2016/10/7.
@@ -16,17 +14,24 @@ import java.io.IOException;
 public class DiskWritableFile implements WritableFile {
 
 
-    FileOutputStream out;
-
+    OutputStream out;
+    FileOutputStream fileOutputStream;
     public DiskWritableFile(String path) throws FileNotFoundException {
-        out = new FileOutputStream(path);
+        fileOutputStream = new FileOutputStream(path);
+        out = new BufferedOutputStream(fileOutputStream);
 
     }
 
 
     @Override
     public void sync() throws IOException {
-        out.getFD().sync();
+        out.flush();
+        fileOutputStream.getFD().sync();
+    }
+
+    @Override
+    public void write(byte b[], int off, int len) throws IOException {
+        out.write(b, off, len);
     }
 
     @Override

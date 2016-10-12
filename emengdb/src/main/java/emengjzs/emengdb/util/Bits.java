@@ -11,7 +11,7 @@ package emengjzs.emengdb.util;
  * Utility methods for packing/unpacking primitive values in/out of byte arrays
  * using big-endian byte ordering.
  */
-class Bits {
+public class Bits {
 
     /*
      * Methods for unpacking primitive values from byte arrays starting at
