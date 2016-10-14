@@ -5,9 +5,12 @@
 package emengjzs.emengdb.util.io;
 
 import emengjzs.emengdb.db.Slice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -15,14 +18,14 @@ import java.nio.channels.FileChannel;
  * Created by emengjzs on 2016/10/11.
  */
 public class MmapWriterableFile implements WritableFile {
-    RandomAccessFile rw;
+    private RandomAccessFile rw;
     private FileChannel fileChannel;
     private MappedByteBuffer mmapBuffer;
     private int mapSize = 1 << (16 - 1);
     private long fileOffset;
     private final int MAX_MAP_SIZE = 1 << 24;
     private boolean isLastMapSync = true;
-
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public MmapWriterableFile(String fileName, long offset) throws IOException {
 
@@ -51,8 +54,21 @@ public class MmapWriterableFile implements WritableFile {
         // asume gc will collect this.
         fileOffset += mmapBuffer.capacity();
         isLastMapSync = true;
+        unmapMmaped0(mmapBuffer);
         mmapBuffer = null;
     }
+
+    private void unmapMmaped0(ByteBuffer buffer) {
+
+            if (buffer instanceof sun.nio.ch.DirectBuffer) {
+                log.debug("Clean up ! {}",  buffer.capacity());
+                sun.misc.Cleaner cleaner = ((sun.nio.ch.DirectBuffer) buffer).cleaner();
+                if (cleaner != null) cleaner.clean();
+                log.debug("Clean up down !");
+            }
+
+    }
+
 
     void resizeMap() throws IOException {
         if (mapSize < MAX_MAP_SIZE) {
@@ -86,7 +102,7 @@ public class MmapWriterableFile implements WritableFile {
 
     @Override
     public void write(byte[] b) throws IOException {
-        write(b, 0, b.length);
+        this.write(b, 0, b.length);
     }
 
 
@@ -95,8 +111,10 @@ public class MmapWriterableFile implements WritableFile {
         // sync();
         int unused = mmapBuffer.remaining();
         unmapCurrentMap();
+        rw.setLength(fileOffset - unused);
         fileChannel.close();
         rw.close();
+
     }
 
     @Override

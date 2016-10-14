@@ -54,6 +54,7 @@ public class LogWriteTest {
     }
 
     @Test
+
     public void write() throws IOException, LogFileException {
         for (int i = 0; i < turns; i ++) {
             String str = getRandomString(random.nextInt(lengthRange) + 1);

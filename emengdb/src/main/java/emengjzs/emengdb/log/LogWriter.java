@@ -87,7 +87,7 @@ public class LogWriter extends LogFormat {
         Bits.putShort(header, 4, (short) (length & 0xFFFF));
         header[6] = (byte) type.id;
         writableFile.write(header);
-        writableFile.write(data.getSubSlice(start, length));
+        writableFile.write(data.array(), data.getStart() + start, length);
         writableFile.flush();
         /*
         if (log.isDebugEnabled()) {
