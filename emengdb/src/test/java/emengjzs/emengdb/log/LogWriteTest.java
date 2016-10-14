@@ -40,7 +40,7 @@ public class LogWriteTest {
     @Before
     public void init() throws IOException {
         LogFormat.K_BLOCK_SIZE = 1024;
-        DataSet = new ArrayList<>(turns + 2);
+        DataSet = new ArrayList(turns + 2);
         diskWritableFile = new MmapWriterableFile(fileName, 0);
         writer = new LogWriter(diskWritableFile);
     }
@@ -58,14 +58,19 @@ public class LogWriteTest {
     public void write() throws IOException, LogFileException {
         for (int i = 0; i < turns; i ++) {
             String str = getRandomString(random.nextInt(lengthRange) + 1);
-            writer.addData(new Slice(str));
+
             DataSet.add(str);
         }
-        System.out.print("write !");
+        System.out.print("data !");
+        for(String str : DataSet) {
+            writer.addData(new Slice(str));
+        }
+
+        System.out.print("writeUTF8 !");
         diskWritableFile.flush();
-        diskWritableFile.sync();
+        // diskWritableFile.sync();
         diskWritableFile.close();
-        System.out.print("write !");
+        System.out.print("writeUTF8 !");
         RandomAccessFile r = new RandomAccessFile(fileName, "r");
         reader = new LogReader(r, 0);
         for (String str : DataSet) {

@@ -5,7 +5,8 @@
 package emengjzs.emengdb.log;
 
 import emengjzs.emengdb.db.Slice;
-import emengjzs.emengdb.util.io.PrimitiveWritableOutputStream;
+import emengjzs.emengdb.util.io.OutputStreamWrapWritableFile;
+import emengjzs.emengdb.util.io.PrimitiveWritable;
 import emengjzs.emengdb.util.io.WritableFile;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 
 /**
@@ -21,33 +21,15 @@ import java.io.IOException;
  */
 public class LogTest {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-   class StringVirtualWritableFile extends PrimitiveWritableOutputStream implements WritableFile {
-
-       StringVirtualWritableFile() {
-           super(new ByteArrayOutputStream());
-       }
-
-       @Override
-       public void sync() throws IOException {
-
-       }
-
-       @Override
-       public void write(Slice data) throws IOException {
-            data.outPut(outputStream);
-       }
-
-       public byte[] getBytes() {
-           return ((ByteArrayOutputStream) outputStream).toByteArray();
-       }
-   }
-
+    ByteArrayOutputStream outputStream;
+    WritableFile sf;
     LogWriter out;
-    StringVirtualWritableFile sf;
+
     @Before
     public void bolckSizeSet() {
         LogFormat.K_BLOCK_SIZE = 32;
-        sf = new StringVirtualWritableFile();
+        outputStream = new ByteArrayOutputStream();
+        sf = new PrimitiveWritable(new OutputStreamWrapWritableFile(outputStream));
         out = new LogWriter(sf);
     }
 

@@ -7,7 +7,6 @@ package emengjzs.emengdb.db;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ListIterator;
-import java.util.Map;
 
 /**
  * Created by emengjzs on 2016/8/30.
@@ -114,7 +113,7 @@ public class MemTable {
 
         Key(long seq, ValueType type, byte[] key, byte[] value) {
             // bytes = new byte[4 + key.length + 8 + 4 + value.length];
-            // write(seq, type, key, value);
+            // writeUTF8(seq, type, key, value);
             this.key = Arrays.copyOf(key, key.length);
             this.seqAndFlag = seq << 8 | type.toByte();
             this.value = Arrays.copyOf(value, value.length);

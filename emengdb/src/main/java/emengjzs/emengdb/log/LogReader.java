@@ -134,7 +134,7 @@ public class LogReader extends LogFormat {
                 byteBuilder.write(bf.get());
             }
             // Slice record = new Slice(bf.array(), bf.arrayOffset() + bf.position(), length);
-            // byteBuilder.write(bf.array(), bf.arrayOffset() + bf.position(), length);
+            // byteBuilder.writeUTF8(bf.array(), bf.arrayOffset() + bf.position(), length);
 
 
 
@@ -160,7 +160,7 @@ public class LogReader extends LogFormat {
     boolean readNextBlock(ByteBuffer bf) throws IOException {
         FileChannel channel = randomAccessFile.getChannel();
         bf.clear();
-        // write to buffer
+        // writeUTF8 to buffer
         int read = channel.read(bf);
         // set up to read from buffer
         bf.flip();

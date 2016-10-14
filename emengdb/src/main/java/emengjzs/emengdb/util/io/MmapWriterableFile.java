@@ -17,13 +17,12 @@ import java.nio.channels.FileChannel;
 /**
  * Created by emengjzs on 2016/10/11.
  */
-public class MmapWriterableFile implements WritableFile {
+public class MmapWriterableFile extends WritableFile {
     private RandomAccessFile rw;
     private FileChannel fileChannel;
     private MappedByteBuffer mmapBuffer;
     private int mapSize = 1 << (16 - 1);
     private long fileOffset;
-    private final int MAX_MAP_SIZE = 1 << 24;
     private boolean isLastMapSync = true;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -38,7 +37,7 @@ public class MmapWriterableFile implements WritableFile {
     @Override
     public void sync() throws IOException {
         if (! isLastMapSync) {
-            this.rw.getFD().sync();
+            // this.rw.getFD().sync();
             isLastMapSync = true;
         }
         mmapBuffer.force();
@@ -49,7 +48,7 @@ public class MmapWriterableFile implements WritableFile {
         write(data.array(), data.getStart(), data.getLength());
     }
 
-    void unmapCurrentMap() {
+    private void unmapCurrentMap() {
         // mmapBuffer.force();
         // asume gc will collect this.
         fileOffset += mmapBuffer.capacity();
@@ -60,17 +59,18 @@ public class MmapWriterableFile implements WritableFile {
 
     private void unmapMmaped0(ByteBuffer buffer) {
 
-            if (buffer instanceof sun.nio.ch.DirectBuffer) {
-                log.debug("Clean up ! {}",  buffer.capacity());
-                sun.misc.Cleaner cleaner = ((sun.nio.ch.DirectBuffer) buffer).cleaner();
-                if (cleaner != null) cleaner.clean();
-                log.debug("Clean up down !");
-            }
+        if (buffer instanceof sun.nio.ch.DirectBuffer) {
+            log.debug("Clean up ! {}",  buffer.capacity());
+            sun.misc.Cleaner cleaner = ((sun.nio.ch.DirectBuffer) buffer).cleaner();
+            if (cleaner != null) cleaner.clean();
+            log.debug("Clean up down !");
+        }
 
     }
 
 
-    void resizeMap() throws IOException {
+    private void resizeMap() throws IOException {
+        int MAX_MAP_SIZE = 1 << 24;
         if (mapSize < MAX_MAP_SIZE) {
             mapSize <<= 1;
         }
@@ -81,7 +81,11 @@ public class MmapWriterableFile implements WritableFile {
 
     @Override
     public void write(byte b) throws IOException {
-        write(new byte[] {b});
+        if (mmapBuffer.remaining() <= 0) {
+            unmapCurrentMap();
+            resizeMap();
+        }
+        mmapBuffer.put(b);
     }
 
     @Override
@@ -101,10 +105,14 @@ public class MmapWriterableFile implements WritableFile {
     }
 
     @Override
+    public void write(int b) throws IOException {
+        write((byte) b);
+    }
+
+    @Override
     public void write(byte[] b) throws IOException {
         this.write(b, 0, b.length);
     }
-
 
     @Override
     public void close() throws IOException {
@@ -114,7 +122,6 @@ public class MmapWriterableFile implements WritableFile {
         rw.setLength(fileOffset - unused);
         fileChannel.close();
         rw.close();
-
     }
 
     @Override

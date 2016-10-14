@@ -7,6 +7,7 @@ package emengjzs.emengdb.log;
 import emengjzs.emengdb.db.Slice;
 import emengjzs.emengdb.util.Bits;
 import emengjzs.emengdb.util.Validate;
+import emengjzs.emengdb.util.io.PrimitiveWritable;
 import emengjzs.emengdb.util.io.WritableFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +19,12 @@ import java.io.IOException;
  */
 public class LogWriter extends LogFormat {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private WritableFile writableFile;
+    private PrimitiveWritable writableFile;
 
     private int blockOffset = 0;
 
     LogWriter(WritableFile writableFile) {
-        this.writableFile = writableFile;
+        this.writableFile = new PrimitiveWritable(writableFile);
     }
 
     // TODO: consider the zero-length empty data

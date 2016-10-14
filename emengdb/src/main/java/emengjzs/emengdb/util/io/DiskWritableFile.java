@@ -11,8 +11,7 @@ import java.io.*;
 /**
  * Created by emengjzs on 2016/10/7.
  */
-public class DiskWritableFile implements WritableFile {
-
+public class DiskWritableFile extends WritableFile {
 
     OutputStream out;
     FileOutputStream fileOutputStream;
