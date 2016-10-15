@@ -10,11 +10,11 @@ import java.io.OutputStream;
 /**
  * Created by emengjzs on 2016/10/14.
  */
-public class OutputStreamWrapWritableFile extends WritableFile {
+public class OutputStreamWrapWritableFile<Output extends OutputStream> extends WritableFile {
 
-    protected OutputStream out;
+    protected Output out;
 
-    public OutputStreamWrapWritableFile(OutputStream out) {
+    public OutputStreamWrapWritableFile(Output out) {
         this.out = out;
     }
 
@@ -26,6 +26,16 @@ public class OutputStreamWrapWritableFile extends WritableFile {
     @Override
     public void write(byte val) throws IOException {
         out.write(val);
+    }
+
+    @Override
+    public void write(byte b[], int offset, int len) throws IOException {
+        out.write(b, offset, len);
+    }
+
+    @Override
+    public void write(byte b[]) throws IOException {
+        out.write(b, 0, b.length);
     }
 
     @Override

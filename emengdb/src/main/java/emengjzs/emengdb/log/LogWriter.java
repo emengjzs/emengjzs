@@ -5,7 +5,6 @@
 package emengjzs.emengdb.log;
 
 import emengjzs.emengdb.db.Slice;
-import emengjzs.emengdb.util.Bits;
 import emengjzs.emengdb.util.Validate;
 import emengjzs.emengdb.util.io.PrimitiveWritable;
 import emengjzs.emengdb.util.io.WritableFile;
@@ -27,6 +26,9 @@ public class LogWriter extends LogFormat {
         this.writableFile = new PrimitiveWritable(writableFile);
     }
 
+    // for zero-filled
+    private final byte[] dummyBytes = new byte[]{0, 0, 0, 0, 0, 0};
+
     // TODO: consider the zero-length empty data
     public void addData(Slice data) throws IOException {
         int leftSize = data.getLength();
@@ -42,7 +44,7 @@ public class LogWriter extends LogFormat {
 
                 if (blockLeftSize > 0) {
                     // fill zero
-                    writableFile.write(new byte[]{0, 0, 0, 0, 0, 0}, 0, blockLeftSize);
+                    writableFile.write(dummyBytes, 0, blockLeftSize);
                 }
                 // next new bolck
 
@@ -82,12 +84,22 @@ public class LogWriter extends LogFormat {
     }
 
     private int addRecord(RecordType type, Slice data, int start, int length) throws IOException {
+
+//        byte header[] = new byte[7];
+//
+//        Bits.putInt(header, 0, 0x12345678);
+//        Bits.putShort(header, 4, (short) (length & 0xFFFF));
+//        header[6] = (byte) type.id;
+//        writableFile.write(header);
+
+        // here write header separately is better than write from
+        // an array because it cost time to apply for a new array
+
         // omit the part of CRC
-        byte header[] = new byte[7];
-        Bits.putInt(header, 0, 0x12345678);
-        Bits.putShort(header, 4, (short) (length & 0xFFFF));
-        header[6] = (byte) type.id;
-        writableFile.write(header);
+        writableFile.writeInt(0x12345678);
+        writableFile.writeShort(length & 0xFFFF);
+        writableFile.writeByte(type.id);
+
         writableFile.write(data.array(), data.getStart() + start, length);
         writableFile.flush();
         /*
