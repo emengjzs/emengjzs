@@ -1,0 +1,15 @@
+{
+  "name": "homework2.0",
+  "version": "1.0.0",
+  "description": "A tss based on Node.js",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "emengjzs",
+  "license": "ISC",
+  "dependencies": {
+    "co": "^4.6.0",
+    "mysql": "^2.12.0"
+  }
+}
