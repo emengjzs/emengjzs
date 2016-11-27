@@ -77,6 +77,7 @@ public class LogWriteTest {
             Assertions.assertThat(str)
                     .isEqualTo(reader.readNextData().toString());
         }
+
         r.close();
     }
 

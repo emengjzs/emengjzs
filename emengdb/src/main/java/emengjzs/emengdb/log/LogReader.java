@@ -107,7 +107,7 @@ public class LogReader extends LogFormat {
     }
 
 
-    RecordType readNextRecord(ByteBuffer bf, ByteArrayOutputStream byteBuilder) throws LogFileException {
+    private RecordType readNextRecord(ByteBuffer bf, ByteArrayOutputStream byteBuilder) throws LogFileException {
         try {
             // skip short dummy zero
             if (bf.remaining() < K_HEADER_SIZE && (! readNextBlock(bf))) {
@@ -157,8 +157,9 @@ public class LogReader extends LogFormat {
      *
      * @param bf
      */
-    boolean readNextBlock(ByteBuffer bf) throws IOException {
+    private boolean readNextBlock(ByteBuffer bf) throws IOException {
         FileChannel channel = randomAccessFile.getChannel();
+
         bf.clear();
         // writeUTF8 to buffer
         int read = channel.read(bf);

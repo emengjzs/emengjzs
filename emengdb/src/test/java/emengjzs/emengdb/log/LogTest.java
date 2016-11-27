@@ -47,5 +47,16 @@ public class LogTest {
         }
     }
 
+    public double getS(double x) {
+        return getS(1, x, x, 0.0);
+    }
 
+    public double getS(int i, double x, double item, double s) {
+        return item <= 10e-5 && item >= -10e-5 ? s + item : getS(i + 1, x, (item * x) / (i + 1) * (-1)  , s + item);
+    }
+
+    @Test
+    public void test() {
+        System.out.print(getS(1));
+    }
 }
